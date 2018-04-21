@@ -9,6 +9,7 @@ import com.ld41.core.Button_;
 import com.ld41.core.ClickListener;
 import com.ld41.core.Screen_;
 import com.ld41.main.Game;
+import com.ld41.menu.clicker.ClickerMainMenu;
 import javafx.embed.swing.SwingFXUtils;
 
 public class Menu extends Screen_ {
@@ -17,6 +18,8 @@ public class Menu extends Screen_ {
     Button_ exitButton;
     OrthographicCamera camera;
     Vector3 mPos;
+
+    Button_ toClickerMenuButton;
 
     public Menu(Game game) {
         super(game);
@@ -30,7 +33,11 @@ public class Menu extends Screen_ {
         camera.position.y = Gdx.graphics.getHeight() / 2;
         batch = new SpriteBatch();
         exitButton = new Button_((Gdx.graphics.getWidth() / 2) - 48, 64, "exit");
-        exitButton.onClick(Menu::Exit);
+        exitButton.onClick(() -> Exit());
+
+        // button to switch to main menu
+        toClickerMenuButton = new Button_((Gdx.graphics.getWidth() / 2 - 48), 700, "toClickerMainMenu" );
+        toClickerMenuButton.onClick(() -> switchScreenToMainMenu());
 
     }
 
@@ -43,6 +50,7 @@ public class Menu extends Screen_ {
         batch.begin();
 
         exitButton.render(batch);
+        toClickerMenuButton.render(batch);
 
         batch.end();
 
@@ -50,6 +58,7 @@ public class Menu extends Screen_ {
         camera.unproject(mPos);
         exitButton.logic(mPos);
 
+        toClickerMenuButton.logic(mPos);
     }
 
     @Override
@@ -82,6 +91,11 @@ public class Menu extends Screen_ {
         System.out.println("Bye bye!");
         System.exit(0);
 
+    }
+
+    public void switchScreenToMainMenu() {
+        getGame().setScreen(new ClickerMainMenu(getGame()));
+        this.dispose();
     }
 
 }
