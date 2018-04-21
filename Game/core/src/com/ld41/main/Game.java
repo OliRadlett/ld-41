@@ -3,7 +3,6 @@ package com.ld41.main;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.ld41.core.ScreenManager;
-import com.ld41.core.Screen_;
 import com.ld41.menu.Menu;
 
 public class Game extends com.badlogic.gdx.Game {

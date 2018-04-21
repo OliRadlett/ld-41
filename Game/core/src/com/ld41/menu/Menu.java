@@ -2,19 +2,18 @@ package com.ld41.menu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.ld41.core.Button_;
-import com.ld41.core.ClickListener;
 import com.ld41.core.Screen_;
 import com.ld41.main.Game;
-import javafx.embed.swing.SwingFXUtils;
+import com.ld41.main.Test;
 
 public class Menu extends Screen_ {
 
     SpriteBatch batch;
     Button_ exitButton;
+    Button_ testButton;
     OrthographicCamera camera;
     Vector3 mPos;
 
@@ -30,7 +29,9 @@ public class Menu extends Screen_ {
         camera.position.y = Gdx.graphics.getHeight() / 2;
         batch = new SpriteBatch();
         exitButton = new Button_((Gdx.graphics.getWidth() / 2) - 48, 64, "exit");
-        exitButton.onClick(Menu::Exit);
+        testButton = new Button_((Gdx.graphics.getWidth() / 2) - 48, 192, "test");
+        exitButton.onClick(() -> Exit());
+        testButton.onClick(() -> Test());
 
     }
 
@@ -43,12 +44,14 @@ public class Menu extends Screen_ {
         batch.begin();
 
         exitButton.render(batch);
+        testButton.render(batch);
 
         batch.end();
 
         mPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(mPos);
         exitButton.logic(mPos);
+        testButton.logic(mPos);
 
     }
 
@@ -77,10 +80,16 @@ public class Menu extends Screen_ {
 
     }
 
-    public static void Exit() {
+    public void Exit() {
 
         System.out.println("Bye bye!");
-        System.exit(0);
+        Gdx.app.exit();
+
+    }
+
+    public void Test() {
+
+        getGame().setScreen(new Test(getGame()));
 
     }
 
