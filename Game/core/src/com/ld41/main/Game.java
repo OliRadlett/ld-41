@@ -10,7 +10,6 @@ public class Game extends com.badlogic.gdx.Game {
 
 	Menu menu;
 	ScreenManager screenManager;
-	Screen_ currentScreen;
 
 
 	@Override
@@ -34,8 +33,6 @@ public class Game extends com.badlogic.gdx.Game {
 	
 	@Override
 	public void dispose () {
-
-		currentScreen.dispose();
 
 	}
 
