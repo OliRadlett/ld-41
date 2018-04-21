@@ -12,6 +12,7 @@ public class MapGeneration {
     List<vCorridor> vCorridors;
     int empty = 0;
     int wall = 1;
+    int numRooms;
 
     public MapGeneration() {
 
@@ -23,6 +24,12 @@ public class MapGeneration {
     }
 
     public int[][] GenerateMap(int width, int height, int numRooms) {
+
+        this.numRooms = numRooms;
+
+        hCorridors.clear();
+        vCorridors.clear();
+        rooms.clear();
 
         int[][] map = new int[width][height];
 
@@ -107,7 +114,7 @@ public class MapGeneration {
 
     public void generateRooms() {
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < numRooms; i++) {
 
             int width = 10 + r.nextInt(15);
             int height = 10 + r.nextInt(15);

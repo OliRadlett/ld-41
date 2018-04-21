@@ -243,7 +243,7 @@ public class Dungeon extends Screen_{
     public void generate() {
 
         System.out.println("Generating new map");
-        map = generator.GenerateMap(100, 100, 1);
+        map = generator.GenerateMap(100, 100, 10);
 
     }
 

@@ -151,17 +151,16 @@ public class ClickerMainMenu extends Screen_ {
 
     public void addMiner() {
 
-        // increases price of a miner by a third each time a new one is bought
-        if (minerCounter > 0) {
-            minerPrice += minerPrice * 0.5;
-            minerStringPrice = "Price: " + minerPrice;
-        }
-
         if (goldCounter >= minerPrice) {
             minerCounter ++;
             minerString = "Miners: " + String.valueOf(minerCounter);
             goldCounter = goldCounter - minerPrice;
             goldString = "Gold: " + String.valueOf(goldCounter);
+            // increases price of a miner by a third each time a new one is bought
+            if (minerCounter > 0) {
+                minerPrice += minerPrice * 0.5;
+                minerStringPrice = "Price: " + minerPrice;
+            }
 
         } else {
             System.out.println("Not enough gold");
