@@ -6,10 +6,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.utils.Timer;
 import com.ld41.core.Button_;
 import com.ld41.core.Screen_;
 import com.ld41.main.Game;
+
 
 public class ClickerMainMenu extends Screen_ {
 
@@ -22,6 +23,15 @@ public class ClickerMainMenu extends Screen_ {
     int goldCounter;
     String goldString;
     BitmapFont font;
+    Button_ dungeonButton;
+    Button_ minerButton;
+    int minerCounter;
+    String minerString;
+    String minerStringPrice;
+    float deltaTimer;
+    int height;
+    int width;
+    int minerPrice;
 
     public ClickerMainMenu(Game game) {
         super(game);
@@ -32,19 +42,38 @@ public class ClickerMainMenu extends Screen_ {
     public void show() {
         goldCounter = 0;
         goldString = "Gold: 0";
+        minerString = "Miners: 0";
+        minerPrice = 50;
+        minerStringPrice = "Price: " + minerPrice;
         font = new BitmapFont();
 
-        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.position.x = Gdx.graphics.getWidth() / 2;
-        camera.position.y = Gdx.graphics.getHeight() / 2;
+        height = Gdx.graphics.getHeight();
+        width = Gdx.graphics.getWidth();
+
+        camera = new OrthographicCamera(width, height);
+        camera.position.x = width / 2;
+        camera.position.y = height / 2;
         batch = new SpriteBatch();
 
         // add main castle texture
         castle = new Texture(Gdx.files.internal("castle/starterCastle.png"));
 
         // add button that adds 1 gold to total
-        clickerButton = new Button_((Gdx.graphics.getWidth() / 2 - 48), Gdx.graphics.getHeight() - 40, "clickGold");
+        clickerButton = new Button_((width / 2 - 48), height - 40, "clickGold");
         clickerButton.onClick(() -> increaseGold());
+
+        // add button that goes to dungeon... or will do when I make it do that
+        dungeonButton = new Button_(width - 110, 10, "toDungeon");
+        dungeonButton.onClick(() ->  sendToDungeon());
+
+        /*
+            upgrades menu
+         */
+
+        // add miner button
+        minerButton = new Button_(10, height - 100 , "addMiner");
+        minerButton.onClick(() -> addMiner());
+
         }
 
     @Override
@@ -55,21 +84,37 @@ public class ClickerMainMenu extends Screen_ {
 
         batch.begin();
 
-        // draw castle texture and render clicker button
+        // draw castle texture and buttons
         x = (Gdx.graphics.getWidth() / 2) - (castle.getWidth() / 2);
         batch.draw(castle, x, 0);
         clickerButton.render(batch);
+        dungeonButton.render(batch);
+        minerButton.render(batch);
 
         // update gold counter
-        font.draw(batch, goldString, 10, 10);
+        font.draw(batch, goldString, 10, height - 10);
+
+        // add and update miner counter
+        font.draw(batch,minerStringPrice, 115, height - 50);
+        font.draw(batch, minerString, 115, height - 80);
         batch.end();
 
         mPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(mPos);
 
-        // add hover functionality to clicker button
+        // add hover functionality to buttons
         clickerButton.logic(mPos);
+        dungeonButton.logic(mPos);
+        minerButton.logic(mPos);
 
+
+        // updates the gold every second
+        deltaTimer += delta;
+
+        if (deltaTimer > 1) {
+            updateGold();
+            deltaTimer = 0;
+        }
     }
 
     @Override
@@ -102,7 +147,34 @@ public class ClickerMainMenu extends Screen_ {
 
         goldString = "Gold: " + String.valueOf(goldCounter);
         System.out.println(String.valueOf(goldCounter));
+    }
 
+    public void addMiner() {
+
+        // increases price of a miner by a third each time a new one is bought
+        if (minerCounter > 0) {
+            minerPrice += minerPrice * 0.5;
+            minerStringPrice = "Price: " + minerPrice;
         }
 
+        if (goldCounter >= minerPrice) {
+            minerCounter ++;
+            minerString = "Miners: " + String.valueOf(minerCounter);
+            goldCounter = goldCounter - minerPrice;
+            goldString = "Gold: " + String.valueOf(goldCounter);
+
+        } else {
+            System.out.println("Not enough gold");
+        }
+    }
+
+    public void sendToDungeon() {
+        // TODO: I dunno, however Oli wants to do this bit
+        System.out.println("PLACEHOLDER");
+    }
+
+    public void updateGold() {
+        goldCounter = goldCounter + (minerCounter * 2);
+        goldString = "Gold: " + String.valueOf(goldCounter);
+    }
 }
