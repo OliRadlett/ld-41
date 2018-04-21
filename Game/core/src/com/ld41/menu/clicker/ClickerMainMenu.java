@@ -3,6 +3,7 @@ package com.ld41.menu.clicker;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -19,15 +20,19 @@ public class ClickerMainMenu extends Screen_ {
     Vector3 mPos;
     int x;
     int goldCounter;
+    String goldString;
+    BitmapFont font;
 
     public ClickerMainMenu(Game game) {
         super(game);
+    }
 
-        }
 
     @Override
     public void show() {
         goldCounter = 0;
+        goldString = "Gold: 0";
+        font = new BitmapFont();
 
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.x = Gdx.graphics.getWidth() / 2;
@@ -40,20 +45,23 @@ public class ClickerMainMenu extends Screen_ {
         // add button that adds 1 gold to total
         clickerButton = new Button_((Gdx.graphics.getWidth() / 2 - 48), Gdx.graphics.getHeight() - 40, "clickGold");
         clickerButton.onClick(() -> increaseGold());
-    }
+        }
 
     @Override
     public void render(float delta) {
 
-        x = (Gdx.graphics.getWidth() / 2) - (castle.getWidth() / 2);
-
         batch.setProjectionMatrix(camera.combined);
         camera.update();
 
-        // draw castle texture and render clicker button
         batch.begin();
+
+        // draw castle texture and render clicker button
+        x = (Gdx.graphics.getWidth() / 2) - (castle.getWidth() / 2);
         batch.draw(castle, x, 0);
         clickerButton.render(batch);
+
+        // update gold counter
+        font.draw(batch, goldString, 10, 10);
         batch.end();
 
         mPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -91,6 +99,10 @@ public class ClickerMainMenu extends Screen_ {
 
     public void increaseGold() {
         goldCounter ++;
+
+        goldString = "Gold: " + String.valueOf(goldCounter);
         System.out.println(String.valueOf(goldCounter));
-    }
+
+        }
+
 }
