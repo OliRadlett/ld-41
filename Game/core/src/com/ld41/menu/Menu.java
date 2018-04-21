@@ -8,6 +8,7 @@ import com.ld41.core.Button_;
 import com.ld41.core.Screen_;
 import com.ld41.main.Game;
 import com.ld41.map.Dungeon;
+import com.ld41.menu.clicker.ClickerMainMenu;
 
 public class Menu extends Screen_ {
 
@@ -16,6 +17,7 @@ public class Menu extends Screen_ {
     Button_ mapTestButton;
     OrthographicCamera camera;
     Vector3 mPos;
+    Button_ toClickerMenuButton;
 
     public Menu(Game game) {
         super(game);
@@ -28,10 +30,15 @@ public class Menu extends Screen_ {
         camera.position.x = Gdx.graphics.getWidth() / 2;
         camera.position.y = Gdx.graphics.getHeight() / 2;
         batch = new SpriteBatch();
+
+        // button to exit game
         exitButton = new Button_((Gdx.graphics.getWidth() / 2) - 48, 64, "exit");
         mapTestButton = new Button_((Gdx.graphics.getWidth() / 2) - 48, 256, "generate");
         exitButton.onClick(() -> Exit());
         mapTestButton.onClick(() -> testMap());
+        // button to switch to main menu
+        toClickerMenuButton = new Button_((Gdx.graphics.getWidth() / 2 - 48), 700, "toClickerMainMenu" );
+        toClickerMenuButton.onClick(() -> switchScreenToMainMenu());
 
     }
 
@@ -45,6 +52,7 @@ public class Menu extends Screen_ {
 
         exitButton.render(batch);
         mapTestButton.render(batch);
+        toClickerMenuButton.render(batch);
 
         batch.end();
 
@@ -52,6 +60,7 @@ public class Menu extends Screen_ {
         camera.unproject(mPos);
         exitButton.logic(mPos);
         mapTestButton.logic(mPos);
+        toClickerMenuButton.logic(mPos);
 
     }
 
@@ -93,6 +102,11 @@ public class Menu extends Screen_ {
         getGame().setScreen(new Dungeon(getGame()));
         this.dispose();
 
+    }
+
+    public void switchScreenToMainMenu() {
+        getGame().setScreen(new ClickerMainMenu(getGame()));
+        this.dispose();
     }
 
 }
