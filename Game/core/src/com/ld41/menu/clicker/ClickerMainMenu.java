@@ -26,7 +26,12 @@ public class ClickerMainMenu extends Screen_ {
     Button_ dungeonButton;
     Button_ minerButton;
     int minerCounter;
+    String minerString;
+    String minerStringPrice;
     float deltaTimer;
+    int height;
+    int width;
+    int minerPrice;
 
     public ClickerMainMenu(Game game) {
         super(game);
@@ -37,10 +42,13 @@ public class ClickerMainMenu extends Screen_ {
     public void show() {
         goldCounter = 0;
         goldString = "Gold: 0";
+        minerString = "Miners: 0";
+        minerPrice = 50;
+        minerStringPrice = "Price: " + minerPrice;
         font = new BitmapFont();
 
-        int height = Gdx.graphics.getHeight();
-        int width = Gdx.graphics.getWidth();
+        height = Gdx.graphics.getHeight();
+        width = Gdx.graphics.getWidth();
 
         camera = new OrthographicCamera(width, height);
         camera.position.x = width / 2;
@@ -84,9 +92,11 @@ public class ClickerMainMenu extends Screen_ {
         minerButton.render(batch);
 
         // update gold counter
-        font.draw(batch, goldString, 10, Gdx.graphics.getHeight() - 10);
+        font.draw(batch, goldString, 10, height - 10);
 
-
+        // add and update miner counter
+        font.draw(batch,minerStringPrice, 115, height - 50);
+        font.draw(batch, minerString, 115, height - 80);
         batch.end();
 
         mPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -141,10 +151,15 @@ public class ClickerMainMenu extends Screen_ {
 
     public void addMiner() {
 
-        int minerPrice = 5;
+        // increases price of a miner by a third each time a new one is bought
+        if (minerCounter > 0) {
+            minerPrice += minerPrice * 0.5;
+            minerStringPrice = "Price: " + minerPrice;
+        }
 
         if (goldCounter >= minerPrice) {
             minerCounter ++;
+            minerString = "Miners: " + String.valueOf(minerCounter);
             goldCounter = goldCounter - minerPrice;
             goldString = "Gold: " + String.valueOf(goldCounter);
 
