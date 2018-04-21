@@ -4,7 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.ld41.core.Button_;
 import com.ld41.core.Screen_;
 import com.ld41.main.Game;
 
@@ -13,6 +15,10 @@ public class ClickerMainMenu extends Screen_ {
     private Texture castle;
     OrthographicCamera camera;
     SpriteBatch batch;
+    Button_ clickerButton;
+    Vector3 mPos;
+    int x;
+    int goldCounter;
 
     public ClickerMainMenu(Game game) {
         super(game);
@@ -21,22 +27,40 @@ public class ClickerMainMenu extends Screen_ {
 
     @Override
     public void show() {
+        goldCounter = 0;
 
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.x = Gdx.graphics.getWidth() / 2;
         camera.position.y = Gdx.graphics.getHeight() / 2;
         batch = new SpriteBatch();
 
-        castle = new Texture(Gdx.files.internal("castle/mainCastle.png"));
+        // add main castle texture
+        castle = new Texture(Gdx.files.internal("castle/starterCastle.png"));
 
+        // add button that adds 1 gold to total
+        clickerButton = new Button_((Gdx.graphics.getWidth() / 2 - 48), Gdx.graphics.getHeight() - 40, "clickGold");
+        clickerButton.onClick(() -> increaseGold());
     }
 
     @Override
     public void render(float delta) {
 
+        x = (Gdx.graphics.getWidth() / 2) - (castle.getWidth() / 2);
+
+        batch.setProjectionMatrix(camera.combined);
+        camera.update();
+
+        // draw castle texture and render clicker button
         batch.begin();
-        batch.draw(castle, 328, 0);
+        batch.draw(castle, x, 0);
+        clickerButton.render(batch);
         batch.end();
+
+        mPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        camera.unproject(mPos);
+
+        // add hover functionality to clicker button
+        clickerButton.logic(mPos);
 
     }
 
@@ -65,11 +89,8 @@ public class ClickerMainMenu extends Screen_ {
 
     }
 
-    public static void Exit() {
-
-        System.out.println("Bye bye!");
-        System.exit(0);
-
+    public void increaseGold() {
+        goldCounter ++;
+        System.out.println(String.valueOf(goldCounter));
     }
-
 }

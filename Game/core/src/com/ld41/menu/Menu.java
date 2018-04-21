@@ -18,7 +18,6 @@ public class Menu extends Screen_ {
     Button_ exitButton;
     OrthographicCamera camera;
     Vector3 mPos;
-
     Button_ toClickerMenuButton;
 
     public Menu(Game game) {
@@ -32,6 +31,8 @@ public class Menu extends Screen_ {
         camera.position.x = Gdx.graphics.getWidth() / 2;
         camera.position.y = Gdx.graphics.getHeight() / 2;
         batch = new SpriteBatch();
+
+        // button to exit game
         exitButton = new Button_((Gdx.graphics.getWidth() / 2) - 48, 64, "exit");
         exitButton.onClick(() -> Exit());
 
@@ -56,8 +57,8 @@ public class Menu extends Screen_ {
 
         mPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(mPos);
-        exitButton.logic(mPos);
 
+        exitButton.logic(mPos);
         toClickerMenuButton.logic(mPos);
     }
 
