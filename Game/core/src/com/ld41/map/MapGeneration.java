@@ -1,25 +1,28 @@
 package com.ld41.map;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class MapGeneration {
 
     Random r;
-    int up = 0;
-    int down = 1;
-    int left = 2;
-    int right = 3;
-    int direction;
+    List<Room> rooms;
+    List<hCorridor> hCorridors;
+    List<vCorridor> vCorridors;
     int empty = 0;
     int wall = 1;
 
     public MapGeneration() {
 
         r = new Random();
+        rooms = new ArrayList<Room>();
+        hCorridors = new ArrayList<hCorridor>();
+        vCorridors = new ArrayList<vCorridor>();
 
     }
 
-    public int[][] GenerateMap(int width, int height, int complexity) {
+    public int[][] GenerateMap(int width, int height, int numRooms) {
 
         int[][] map = new int[width][height];
 
@@ -34,78 +37,15 @@ public class MapGeneration {
 
         }
 
-        // Dig out a room in the middle
-        int roomX = Math.round(width / 2);
-        int roomY = Math.round(height / 2);
-        int roomWidth = 10;
-        int roomHeight = 10;
+        generateRooms();
 
-        for (int i = 0; i < width; i++) {
+        for (Room room : rooms) {
 
-            for (int j = 0; j < height; j++) {
+            for (int i = 0; i < width; i++) {
 
-                if (i >= roomX && i <= roomX + roomWidth && j >= roomY && j <= roomY + roomHeight) {
+                for (int j = 0; j < height; j++) {
 
-                    map[i][j] = 0;
-
-                }
-
-            }
-
-        }
-
-        // Pick random wall
-        boolean foundWall = false;
-        int tryX = 0;
-        int tryY = 0;
-
-
-        while (!foundWall) {
-
-            tryX = r.nextInt(width);
-            tryY = r.nextInt(height);
-
-            int square = map[tryX][tryY];
-
-            if  (square == empty) {
-
-                if (map[tryX - 1][tryY] == wall) { // Check left
-
-                    foundWall = true;
-                    direction = left;
-
-                } else if (map[tryX + 1][tryY] == wall) { // Check right
-
-                    foundWall = true;
-                    direction = right;
-
-                } else if (map[tryX][tryY - 1] == wall) { // Check bellow
-
-                    foundWall = true;
-                    direction = down;
-
-                } else if (map[tryX][tryY + 1] == wall) { // Check above
-
-                    foundWall = true;
-                    direction = up;
-
-                }
-
-            }
-
-        }
-
-        // Add corridor
-        int corridorWidth = r.nextInt(3) + 1;
-        int corridorLength = r.nextInt(10) + 1;
-
-        for (int i = 0; i < width; i++) {
-
-            for (int j = 0; j < height; j++) {
-
-                if (direction == right) {
-
-                    if (i >= tryX && i <= tryX + corridorLength && j >= tryY && j <= tryY + corridorWidth) {
+                    if (i >= room.x1 && i <= room.x2 && j >= room.y1 && j <= room.y2) {
 
                         map[i][j] = empty;
 
@@ -113,11 +53,45 @@ public class MapGeneration {
 
                 }
 
-                if (direction == up) {
+            }
 
-                    if (i >= tryX && i <= corridorWidth + tryY && j >= tryY && j <= tryY + corridorLength) {
+        }
 
-                        map[i][j] = empty;
+        for (hCorridor corridor : hCorridors) {
+
+            for (int i = 0; i < width; i++) {
+
+                for (int j = 0; j < height; j++) {
+
+                    for (int x : corridor.x) {
+
+                        if (x == i && corridor.y == j) {
+
+                            map[i][j] = empty;
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        for (vCorridor corridor : vCorridors) {
+
+            for (int i = 0; i < width; i++) {
+
+                for (int j = 0; j < height; j++) {
+
+                    for (int y : corridor.y) {
+
+                        if (corridor.x == i && y == j) {
+
+                            map[i][j] = empty;
+
+                        }
 
                     }
 
@@ -131,4 +105,78 @@ public class MapGeneration {
 
     }
 
+    public void generateRooms() {
+
+        for (int i = 0; i < 5; i++) {
+
+            int width = 10 + r.nextInt(15);
+            int height = 10 + r.nextInt(15);
+            int x = r.nextInt(100 - width - 1) + 1;
+            int y = r.nextInt(100 - height - 1) + 1;
+
+            Room room = new Room(x, y, width, height);
+
+            boolean failed = false;
+
+            for (Room r : rooms) {
+
+                if (room.intersects(r)) {
+
+                    failed = true;
+                    i--;
+                    break;
+
+                }
+
+            }
+
+            if (!failed) {
+
+                // centreX and prevCentreX are the same for some reason.
+
+                int centreX = room.centreX;
+                int centreY = room.centreY;
+
+                if (rooms.size() != 0) {
+
+                    int prevCentreX = rooms.get(rooms.size() - 1).centreX;
+                    int prevCentreY = rooms.get(rooms.size() - 1).centreY;
+
+                    int dir = r.nextInt(2);
+                    // horizontal
+                    if (dir == 0) {
+
+                        System.out.println("horizontal first");
+
+                        hCorridors.add(new hCorridor(prevCentreX, centreX, prevCentreY));
+                        vCorridors.add(new vCorridor(prevCentreY, centreY, centreX));
+
+                    }
+
+                    // vertical
+                    if (dir == 1) {
+
+                        System.out.println("vertical first");
+
+                        vCorridors.add(new vCorridor(prevCentreY, centreY, prevCentreX));
+                        hCorridors.add(new hCorridor(prevCentreX, centreX, centreY));
+
+                    }
+
+                }
+
+            }
+
+            if (!failed) {
+
+                rooms.add(room);
+
+            }
+
+        }
+
+    }
+
 }
+
+

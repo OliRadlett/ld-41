@@ -13,13 +13,15 @@ import com.ld41.main.Game;
 
 public class Dungeon extends Screen_{
 
-    SpriteBatch batch;
+    SpriteBatch batch, GUIbatch;
     Button_ generateButton;
     OrthographicCamera camera;
     Vector3 mPos;
     MapGeneration generator;
     int[][] map;
     Texture wall;
+    Texture debugRed;
+    Texture debugGreen;
 
     boolean wPressed, aPressed, dPressed, sPressed;
 
@@ -36,9 +38,12 @@ public class Dungeon extends Screen_{
         camera.position.x = Gdx.graphics.getWidth() / 2;
         camera.position.y = Gdx.graphics.getHeight() / 2;
         batch = new SpriteBatch();
+        GUIbatch = new SpriteBatch();
         generateButton = new Button_(64, 64, "generate");
         generateButton.onClick(() -> generate());
         wall = new Texture("map/wall.png");
+        debugRed = new Texture("map/debugRed.png");
+        debugGreen = new Texture("map/debugGreen.png");
         generator = new MapGeneration();
         map = new int[100][100];
         generate();
@@ -170,6 +175,17 @@ public class Dungeon extends Screen_{
                     case 1:
 
                         batch.draw(wall, i * 16, j * 16);
+                        break;
+
+                    case 2:
+
+                        batch.draw(debugRed, i * 16, j * 16);
+                        break;
+
+                    case 3:
+
+                        batch.draw(debugGreen, i * 16, j * 16);
+                        break;
 
                 }
 
@@ -177,13 +193,24 @@ public class Dungeon extends Screen_{
 
         }
 
-        generateButton.render(batch);
+
 
         batch.end();
 
         mPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(mPos);
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+
+            generate();
+
+        }
+
+       /* GUIbatch.begin();
+        generateButton.render(GUIbatch);
         generateButton.logic(mPos);
+        GUIbatch.end();*/
+        // Not right but idk
 
 
     }
