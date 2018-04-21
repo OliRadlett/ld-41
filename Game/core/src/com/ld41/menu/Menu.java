@@ -2,19 +2,18 @@ package com.ld41.menu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.ld41.core.Button_;
-import com.ld41.core.ClickListener;
 import com.ld41.core.Screen_;
 import com.ld41.main.Game;
-import javafx.embed.swing.SwingFXUtils;
+import com.ld41.map.Dungeon;
 
 public class Menu extends Screen_ {
 
     SpriteBatch batch;
     Button_ exitButton;
+    Button_ mapTestButton;
     OrthographicCamera camera;
     Vector3 mPos;
 
@@ -30,7 +29,9 @@ public class Menu extends Screen_ {
         camera.position.y = Gdx.graphics.getHeight() / 2;
         batch = new SpriteBatch();
         exitButton = new Button_((Gdx.graphics.getWidth() / 2) - 48, 64, "exit");
-        exitButton.onClick(Menu::Exit);
+        mapTestButton = new Button_((Gdx.graphics.getWidth() / 2) - 48, 256, "generate");
+        exitButton.onClick(() -> Exit());
+        mapTestButton.onClick(() -> testMap());
 
     }
 
@@ -43,12 +44,14 @@ public class Menu extends Screen_ {
         batch.begin();
 
         exitButton.render(batch);
+        mapTestButton.render(batch);
 
         batch.end();
 
         mPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(mPos);
         exitButton.logic(mPos);
+        mapTestButton.logic(mPos);
 
     }
 
@@ -77,10 +80,18 @@ public class Menu extends Screen_ {
 
     }
 
-    public static void Exit() {
+    public void Exit() {
 
         System.out.println("Bye bye!");
-        System.exit(0);
+        Gdx.app.exit();
+        this.dispose();
+
+    }
+
+    public void testMap() {
+
+        getGame().setScreen(new Dungeon(getGame()));
+        this.dispose();
 
     }
 
