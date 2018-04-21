@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.ld41.core.Button_;
 import com.ld41.core.Screen_;
 import com.ld41.main.Game;
+import com.ld41.menu.Menu;
 
 
 public class ClickerMainMenu extends Screen_ {
@@ -32,6 +33,8 @@ public class ClickerMainMenu extends Screen_ {
     int height;
     int width;
     int minerPrice;
+    int gps;
+    Button_ mainMenuButton;
 
     public ClickerMainMenu(Game game) {
         super(game);
@@ -62,9 +65,14 @@ public class ClickerMainMenu extends Screen_ {
         clickerButton = new Button_((width / 2 - 48), height - 40, "clickGold");
         clickerButton.onClick(() -> increaseGold());
 
-        // add button that goes to dungeon... or will do when I make it do that
+        // add button that goes to dungeon... todo: or will do when I make it do that
         dungeonButton = new Button_(width - 110, 10, "toDungeon");
         dungeonButton.onClick(() ->  sendToDungeon());
+
+        // add button that sends the user back to main menu
+        mainMenuButton = new Button_(10, 10, "toMainMenu");
+        mainMenuButton.onClick(() -> sendToMainMenu());
+
 
         /*
             upgrades menu
@@ -90,6 +98,7 @@ public class ClickerMainMenu extends Screen_ {
         clickerButton.render(batch);
         dungeonButton.render(batch);
         minerButton.render(batch);
+        mainMenuButton.render(batch);
 
         // update gold counter
         font.draw(batch, goldString, 10, height - 10);
@@ -97,6 +106,7 @@ public class ClickerMainMenu extends Screen_ {
         // add and update miner counter
         font.draw(batch,minerStringPrice, 115, height - 50);
         font.draw(batch, minerString, 115, height - 80);
+
         batch.end();
 
         mPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -106,6 +116,7 @@ public class ClickerMainMenu extends Screen_ {
         clickerButton.logic(mPos);
         dungeonButton.logic(mPos);
         minerButton.logic(mPos);
+        mainMenuButton.logic(mPos);
 
 
         // updates the gold every second
@@ -156,6 +167,7 @@ public class ClickerMainMenu extends Screen_ {
             minerString = "Miners: " + String.valueOf(minerCounter);
             goldCounter = goldCounter - minerPrice;
             goldString = "Gold: " + String.valueOf(goldCounter);
+
             // increases price of a miner by a third each time a new one is bought
             if (minerCounter > 0) {
                 minerPrice += minerPrice * 0.5;
@@ -172,8 +184,15 @@ public class ClickerMainMenu extends Screen_ {
         System.out.println("PLACEHOLDER");
     }
 
+    public void sendToMainMenu() {
+        getGame().setScreen(new Menu(getGame()));
+        this.dispose();
+    }
+
     public void updateGold() {
-        goldCounter = goldCounter + (minerCounter * 2);
+        gps += minerCounter * 2;
+        goldCounter = goldCounter + gps;
         goldString = "Gold: " + String.valueOf(goldCounter);
     }
+
 }
