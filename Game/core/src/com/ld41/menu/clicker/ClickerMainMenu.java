@@ -27,6 +27,10 @@ public class ClickerMainMenu extends Screen_ {
     Button_ dungeonButton;
     Button_ minerButton;
     int minerCounter;
+    int pickaxeCounter;
+    int pickaxePrice;
+    String pickaxeString;
+    String pickaxeStringPrice;
     String minerString;
     String minerStringPrice;
     float deltaTimer;
@@ -35,6 +39,7 @@ public class ClickerMainMenu extends Screen_ {
     int minerPrice;
     int gps;
     Button_ mainMenuButton;
+    Button_ pickaxeButton;
 
     public ClickerMainMenu(Game game) {
         super(game);
@@ -48,6 +53,11 @@ public class ClickerMainMenu extends Screen_ {
         minerString = "Miners: 0";
         minerPrice = 50;
         minerStringPrice = "Price: " + minerPrice;
+
+        pickaxePrice = 25;
+        pickaxeString = "Pickaxe Upgrades: 0";
+        pickaxeStringPrice = "Price: " + pickaxePrice;
+
         font = new BitmapFont();
 
         height = Gdx.graphics.getHeight();
@@ -78,8 +88,12 @@ public class ClickerMainMenu extends Screen_ {
             upgrades menu
          */
 
+        // add upgrade pickaxe button
+        pickaxeButton = new Button_(10, Gdx.graphics.getHeight() - 100, "upgradePickaxe");
+        pickaxeButton.onClick(() -> upgradePickaxe());
+
         // add miner button
-        minerButton = new Button_(10, height - 100 , "addMiner");
+        minerButton = new Button_(10, Gdx.graphics.getHeight() - 180, "addMiner");
         minerButton.onClick(() -> addMiner());
 
         }
@@ -99,13 +113,18 @@ public class ClickerMainMenu extends Screen_ {
         dungeonButton.render(batch);
         minerButton.render(batch);
         mainMenuButton.render(batch);
+        pickaxeButton.render(batch);
 
         // update gold counter
-        font.draw(batch, goldString, 10, height - 10);
+        font.draw(batch, goldString, 10, Gdx.graphics.getHeight() - 10);
 
-        // add and update miner counter
-        font.draw(batch,minerStringPrice, 115, height - 50);
-        font.draw(batch, minerString, 115, height - 80);
+        // add and update pickaxe counter and price
+        font.draw(batch, pickaxeStringPrice, 115, Gdx.graphics.getHeight() - 45);
+        font.draw(batch, pickaxeString, 115, Gdx.graphics.getHeight() - 75);
+
+        // add and update miner counter and price
+        font.draw(batch, minerStringPrice, 115, Gdx.graphics.getHeight() - 125);
+        font.draw(batch, minerString, 115, Gdx.graphics.getHeight() - 155);
 
         batch.end();
 
@@ -117,7 +136,7 @@ public class ClickerMainMenu extends Screen_ {
         dungeonButton.logic(mPos);
         minerButton.logic(mPos);
         mainMenuButton.logic(mPos);
-
+        pickaxeButton.logic(mPos);
 
         // updates the gold every second
         deltaTimer += delta;
@@ -160,6 +179,23 @@ public class ClickerMainMenu extends Screen_ {
         System.out.println(String.valueOf(goldCounter));
     }
 
+    public void upgradePickaxe() {
+        if (goldCounter >= pickaxePrice) {
+            pickaxeCounter ++;
+            pickaxeString = "Pickaxe Upgrades: " + String.valueOf(pickaxeCounter);
+            goldCounter -= pickaxePrice;
+            goldString = "Gold: " + String.valueOf(goldCounter);
+
+            if (pickaxeCounter > 0) {
+                pickaxePrice += pickaxePrice * 0.6;
+                pickaxeStringPrice = "Price " + pickaxePrice;
+                gps += pickaxeCounter;
+            }
+        } else {
+            System.out.println("Not enough gold");
+        }
+    }
+
     public void addMiner() {
 
         if (goldCounter >= minerPrice) {
@@ -172,12 +208,14 @@ public class ClickerMainMenu extends Screen_ {
             if (minerCounter > 0) {
                 minerPrice += minerPrice * 0.5;
                 minerStringPrice = "Price: " + minerPrice;
+                gps += minerCounter * 2;
             }
 
         } else {
             System.out.println("Not enough gold");
         }
     }
+
 
     public void sendToDungeon() {
         // TODO: I dunno, however Oli wants to do this bit
@@ -190,7 +228,8 @@ public class ClickerMainMenu extends Screen_ {
     }
 
     public void updateGold() {
-        gps += minerCounter * 2;
+
+        System.out.println(String.valueOf(gps));
         goldCounter = goldCounter + gps;
         goldString = "Gold: " + String.valueOf(goldCounter);
     }
