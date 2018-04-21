@@ -31,19 +31,6 @@ public class Button_ {
         this.height = texture.getHeight();
         this.bounds = new Rectangle(this.x, this.y, this.width, this.height);
 
-        Gdx.input.setInputProcessor(new InputAdapter() {
-
-            @Override
-            public boolean touchDown (int screenX, int screenY, int pointer, int button) {
-
-                callback.run();
-
-                return false;
-
-            }
-
-        });
-
     }
 
     public void onClick(Runnable onClick) {
@@ -63,6 +50,12 @@ public class Button_ {
         if (this.bounds.contains(mPos.x, mPos.y)) {
 
             this.texture = textureHover;
+
+            if (Gdx.input.justTouched()) {
+
+                this.callback.run();
+
+            }
 
         } else {
 
