@@ -22,6 +22,7 @@ public class ClickerMainMenu extends Screen_ {
     int goldCounter;
     String goldString;
     BitmapFont font;
+    Button_ dungeonButton;
 
     public ClickerMainMenu(Game game) {
         super(game);
@@ -45,6 +46,10 @@ public class ClickerMainMenu extends Screen_ {
         // add button that adds 1 gold to total
         clickerButton = new Button_((Gdx.graphics.getWidth() / 2 - 48), Gdx.graphics.getHeight() - 40, "clickGold");
         clickerButton.onClick(() -> increaseGold());
+
+        // add button that goes to dungeon... or will do when I make it do that
+        //dungeonButton = new Button_(Gdx.graphics.getWidth() - 110, 10, "toDungeon");
+        //dungeonButton.onClick(() ->  sendToDungeon());
         }
 
     @Override
@@ -55,20 +60,22 @@ public class ClickerMainMenu extends Screen_ {
 
         batch.begin();
 
-        // draw castle texture and render clicker button
+        // draw castle texture and buttons
         x = (Gdx.graphics.getWidth() / 2) - (castle.getWidth() / 2);
         batch.draw(castle, x, 0);
         clickerButton.render(batch);
+        //dungeonButton.render(batch);
 
         // update gold counter
-        font.draw(batch, goldString, 10, 10);
+        font.draw(batch, goldString, 10, Gdx.graphics.getHeight() - 10);
         batch.end();
 
         mPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(mPos);
 
-        // add hover functionality to clicker button
+        // add hover functionality to buttons
         clickerButton.logic(mPos);
+        //dungeonButton.logic(mPos);
 
     }
 
@@ -102,7 +109,10 @@ public class ClickerMainMenu extends Screen_ {
 
         goldString = "Gold: " + String.valueOf(goldCounter);
         System.out.println(String.valueOf(goldCounter));
+    }
 
-        }
-
+    public void sendToDungeon() {
+        // TODO: I dunno, however Oli wants to do this bit
+        System.out.println("PLACEHOLDER");
+    }
 }
