@@ -18,7 +18,7 @@ import java.util.Properties;
 
 public class ClickerMainMenu extends Screen_ {
 
-    private Texture castle;
+    private Texture castle, bg;
     OrthographicCamera camera;
     SpriteBatch batch;
     Button_ clickerButton;
@@ -146,6 +146,9 @@ public class ClickerMainMenu extends Screen_ {
         // add main castle texture
         castle = new Texture(Gdx.files.internal("castle/castleMain.png"));
 
+        // Add background texture
+        bg = new Texture("castle/background.png");
+
         // add button that adds 1 gold to total
         clickerButton = new Button_((width / 2 - 48), height - 40, "clickGold");
         clickerButton.onClick(() -> increaseGold());
@@ -207,6 +210,8 @@ public class ClickerMainMenu extends Screen_ {
         camera.update();
 
         batch.begin();
+
+        batch.draw(bg, 0, 0);
 
         // draw castle texture and buttons
         x = (Gdx.graphics.getWidth() / 2) - (castle.getWidth() / 2);

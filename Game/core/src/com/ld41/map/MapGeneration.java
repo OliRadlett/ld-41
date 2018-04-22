@@ -1,5 +1,7 @@
 package com.ld41.map;
 
+import com.badlogic.gdx.math.Rectangle;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -10,6 +12,7 @@ public class MapGeneration {
     List<Room> rooms;
     List<hCorridor> hCorridors;
     List<vCorridor> vCorridors;
+    public List<Rectangle> collisions;
     int empty = 0;
     int wall = 1;
     int numRooms;
@@ -17,12 +20,14 @@ public class MapGeneration {
     int roomHeight;
     public DemoCharacter character;
 
+
     public MapGeneration() {
 
         r = new Random();
         rooms = new ArrayList<Room>();
         hCorridors = new ArrayList<hCorridor>();
         vCorridors = new ArrayList<vCorridor>();
+        collisions = new ArrayList<Rectangle>();
 
     }
 
@@ -55,7 +60,7 @@ public class MapGeneration {
 
             if (rooms.indexOf(room) == 0) {
 
-                character = new DemoCharacter(room.centreX * 32, room.centreY * 32);
+                character = new DemoCharacter(room.centreX * 32, room.centreY * 32, this);
 
             }
 
@@ -138,6 +143,21 @@ public class MapGeneration {
 
             map[0][j] = wall;
             map[width - 1][j] = wall;
+
+        }
+
+        // Add collisions
+        for (int i = 0; i < width; i++) {
+
+            for (int j = 0; j < height; j++) {
+
+                if (map[i][j] == wall) {
+
+                    collisions.add(new Rectangle(i * 32, j * 32, 32, 32));
+
+                }
+
+            }
 
         }
 

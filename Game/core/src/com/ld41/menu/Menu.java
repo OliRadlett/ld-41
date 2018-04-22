@@ -7,14 +7,12 @@ import com.badlogic.gdx.math.Vector3;
 import com.ld41.core.Button_;
 import com.ld41.core.Screen_;
 import com.ld41.main.Game;
-import com.ld41.map.Dungeon;
 import com.ld41.menu.clicker.ClickerMainMenu;
 
 public class Menu extends Screen_ {
 
     SpriteBatch batch;
     Button_ exitButton;
-    Button_ mapTestButton;
     OrthographicCamera camera;
     Vector3 mPos;
     Button_ toClickerMenuButton;
@@ -33,9 +31,7 @@ public class Menu extends Screen_ {
 
         // button to exit game
         exitButton = new Button_((Gdx.graphics.getWidth() / 2) - 48, 64, "exit");
-        mapTestButton = new Button_((Gdx.graphics.getWidth() / 2) - 48, 256, "generate");
         exitButton.onClick(() -> Exit());
-        mapTestButton.onClick(() -> testMap());
         // button to switch to main menu
         toClickerMenuButton = new Button_((Gdx.graphics.getWidth() / 2 - 48), 700, "toClickerMainMenu" );
         toClickerMenuButton.onClick(() -> switchScreenToMainMenu());
@@ -51,7 +47,6 @@ public class Menu extends Screen_ {
         batch.begin();
 
         exitButton.render(batch);
-        mapTestButton.render(batch);
         toClickerMenuButton.render(batch);
 
         batch.end();
@@ -59,7 +54,6 @@ public class Menu extends Screen_ {
         mPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(mPos);
         exitButton.logic(mPos);
-        mapTestButton.logic(mPos);
         toClickerMenuButton.logic(mPos);
 
     }
@@ -93,13 +87,6 @@ public class Menu extends Screen_ {
 
         System.out.println("Bye bye!");
         Gdx.app.exit();
-        this.dispose();
-
-    }
-
-    public void testMap() {
-
-        getGame().setScreen(new Dungeon(getGame()));
         this.dispose();
 
     }
