@@ -61,6 +61,9 @@ public class ClickerMainMenu extends Screen_ {
     boolean haveLeftTurret;
     Button_ leftTurretButton;
     Texture leftTurret;
+    boolean haveMainTower;
+    Button_ mainTowerButton;
+    Texture mainTower;
 
     public ClickerMainMenu(Game game) {
         super(game);
@@ -111,6 +114,7 @@ public class ClickerMainMenu extends Screen_ {
                 haveLeftTower = Boolean.parseBoolean(properties.getProperty("haveLeftTower"));
                 haveRightTurret = Boolean.parseBoolean(properties.getProperty("haveRightTurret"));
                 haveLeftTurret = Boolean.parseBoolean(properties.getProperty("haveLeftTurret"));
+                haveMainTower = Boolean.parseBoolean(properties.getProperty("haveMainTower"));
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -137,6 +141,7 @@ public class ClickerMainMenu extends Screen_ {
             haveLeftTower = false;
             haveRightTurret = false;
             haveLeftTurret = false;
+            haveMainTower = false;
         }
 
         height = Gdx.graphics.getHeight();
@@ -194,6 +199,7 @@ public class ClickerMainMenu extends Screen_ {
         leftTowerBody = new Texture(Gdx.files.internal("castle/leftTowerBody.png"));
         rightTurret = new Texture(Gdx.files.internal("castle/rightTurret.png"));
         leftTurret = new Texture(Gdx.files.internal("castle/leftTurret.png"));
+        mainTower = new Texture(Gdx.files.internal("castle/mainTower.png"));
 
         // add right tower upgrade button
         rightTowerButton = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 100, "buildRightTower");
@@ -210,6 +216,10 @@ public class ClickerMainMenu extends Screen_ {
         // add left turret
         leftTurretButton = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 340, "buildLeftTurret");
         leftTurretButton.onClick(() -> buildLeftTurret());
+
+        // add main tower
+        mainTowerButton = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 420, "buildMainTower");
+        mainTowerButton.onClick(() -> buildMainTower());
     }
 
     @Override
@@ -244,6 +254,9 @@ public class ClickerMainMenu extends Screen_ {
         if (!haveLeftTurret) {
             leftTurretButton.render(batch);
         }
+        if (!haveMainTower) {
+            mainTowerButton.render(batch);
+        }
 
         // update gold counter and gps counter
         font.draw(batch, goldString, 10, Gdx.graphics.getHeight() - 10);
@@ -273,6 +286,9 @@ public class ClickerMainMenu extends Screen_ {
         if (haveLeftTurret) {
             batch.draw(leftTurret, x, 0);
         }
+        if (haveMainTower) {
+            batch.draw(mainTower, x, 0);
+        }
 
         batch.end();
 
@@ -298,6 +314,9 @@ public class ClickerMainMenu extends Screen_ {
         }
         if (!haveLeftTurret) {
             leftTurretButton.logic(mPos);
+        }
+        if (!haveMainTower) {
+            mainTowerButton.logic(mPos);
         }
 
         // updates the gold every second
@@ -433,6 +452,14 @@ public class ClickerMainMenu extends Screen_ {
         }
     }
 
+    public void buildMainTower() {
+        if (goldCounter >= 1) {
+            haveMainTower = true;
+        } else {
+            System.out.println("Not enough gold");
+        }
+    }
+
 
     public void sendToDungeon() {
         saveToFile();
@@ -476,6 +503,8 @@ public class ClickerMainMenu extends Screen_ {
             properties.setProperty("haveRightTower", String.valueOf(haveRightTower));
             properties.setProperty("haveLeftTower", String.valueOf(haveLeftTower));
             properties.setProperty("haveRightTurret", String.valueOf(haveRightTurret));
+            properties.setProperty("haveLeftTurret", String.valueOf(haveLeftTurret));
+            properties.setProperty("haveMainTower", String.valueOf(haveMainTower));
 
             File file = new File("save.properties");
             System.out.println(file.getAbsolutePath());
