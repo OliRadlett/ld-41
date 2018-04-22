@@ -18,7 +18,7 @@ import java.util.Properties;
 
 public class ClickerMainMenu extends Screen_ {
 
-    private Texture castle;
+    private Texture castle, bg;
     OrthographicCamera camera;
     SpriteBatch batch;
     Button_ clickerButton;

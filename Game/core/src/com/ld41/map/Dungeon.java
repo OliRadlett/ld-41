@@ -20,7 +20,7 @@ public class Dungeon extends Screen_{
     Vector3 mPos;
     MapGeneration generator;
     int[][] map;
-    Texture wall, debug, debug2;
+    Texture wall, floor, debug, debug2, almostlighting;
 
     boolean wPressed, aPressed, dPressed, sPressed;
 
@@ -39,11 +39,14 @@ public class Dungeon extends Screen_{
         generateButton = new Button_(64, 64, "generate");
         generateButton.onClick(() -> generate());
         wall = new Texture("map/wall.png");
+        floor = new Texture("map/floor.png");
+        almostlighting = new Texture("map/almostlighting.png");
         generator = new MapGeneration();
         map = new int[100][100];
         generate();
         camera.position.x = generator.character.getX() - 16;
         camera.position.y = generator.character.getY() - 16;
+        camera.zoom = 0.5f;
         debug = new Texture("map/debug.png");
         debug2 = new Texture("map/debug2.png");
 
@@ -111,24 +114,6 @@ public class Dungeon extends Screen_{
 
             }
 
-            @Override
-            public boolean scrolled(int amount) {
-
-                if (amount == 1) {
-
-                    camera.zoom += 1 * 0.2f;
-
-                }
-
-                if (amount == -1) {
-
-                    camera.zoom -= 1 * 0.2f;
-
-                }
-
-                return false;
-
-            }
         });
 
     }
@@ -150,6 +135,11 @@ public class Dungeon extends Screen_{
 
                 switch (map[i][j]) {
 
+                    case 0:
+
+                        batch.draw(floor, i * floor.getWidth(), j * floor.getHeight());
+                        break;
+
                     case 1:
 
                         batch.draw(wall, i * wall.getWidth(), j * wall.getHeight());
@@ -167,17 +157,11 @@ public class Dungeon extends Screen_{
 
             boolean canMove = true;
 
-            batch.draw(debug2, generator.character.x, generator.character.y);
-
             for (Rectangle r : generator.collisions) {
-
-                batch.draw(debug, r.x, r.y);
 
                 Rectangle pR = new Rectangle(generator.character.getX(), generator.character.getY() + 2, 32, 32);
 
                 if (r.contains(pR) || pR.contains(r) || r.overlaps(pR) || pR.overlaps(r)) {
-
-                    System.out.println("TEST");
 
                     canMove = false;
                     break;
@@ -198,18 +182,12 @@ public class Dungeon extends Screen_{
 
             boolean canMove = true;
 
-            batch.draw(debug2, generator.character.x, generator.character.y);
-
             for (Rectangle r : generator.collisions) {
-
-                batch.draw(debug, r.x, r.y);
 
                 Rectangle pR = new Rectangle(generator.character.getX() - 2, generator.character.getY(), 32, 32);
 
                 if (r.contains(pR) || pR.contains(r) || r.overlaps(pR) || pR.overlaps(r)) {
 
-                    System.out.println("TEST");
-
                     canMove = false;
                     break;
 
@@ -229,18 +207,12 @@ public class Dungeon extends Screen_{
 
             boolean canMove = true;
 
-            batch.draw(debug2, generator.character.x, generator.character.y);
-
             for (Rectangle r : generator.collisions) {
-
-                batch.draw(debug, r.x, r.y);
 
                 Rectangle pR = new Rectangle(generator.character.getX(), generator.character.getY() - 2, 32, 32);
 
                 if (r.contains(pR) || pR.contains(r) || r.overlaps(pR) || pR.overlaps(r)) {
 
-                    System.out.println("TEST");
-
                     canMove = false;
                     break;
 
@@ -261,17 +233,11 @@ public class Dungeon extends Screen_{
 
             boolean canMove = true;
 
-            batch.draw(debug2, generator.character.x, generator.character.y);
-
             for (Rectangle r : generator.collisions) {
-
-                batch.draw(debug, r.x, r.y);
 
                 Rectangle pR = new Rectangle(generator.character.getX() + 2, generator.character.getY(), 32, 32);
 
                 if (r.contains(pR) || pR.contains(r) || r.overlaps(pR) || pR.overlaps(r)) {
-
-                    System.out.println("TEST");
 
                     canMove = false;
                     break;
@@ -287,51 +253,6 @@ public class Dungeon extends Screen_{
             }
 
         }
-
-        /*if (aPressed) {
-
-            int tileOnLeft = map[((generator.character.getX() - 2) / 32)][generator.character.getY() / 32];
-            if (tileOnLeft == 0) {
-
-                generator.character.setX(generator.character.getX() - 2);
-
-            }
-
-        }
-
-        if (dPressed) {
-
-            int tileOnRight = map[((generator.character.getX()) / 32) + 1][generator.character.getY() / 32];
-            if (tileOnRight == 0) {
-
-                generator.character.setX(generator.character.getX() + 2);
-
-            }
-
-        }
-
-        if (wPressed) {
-
-            int tileAbove = map[(generator.character.getX() / 32)][((generator.character.getY()) / 32) + 1];
-            if (tileAbove == 0) {
-
-                generator.character.setY(generator.character.getY() + 2);
-
-            }
-
-        }
-
-        if (sPressed) {
-
-            int tileBellow = map[(generator.character.getX() / 32)][((generator.character.getY() - 4) / 32)];
-            if (tileBellow == 0) {
-
-                generator.character.setY(generator.character.getY() - 2);
-
-            }
-
-        }*/
-
 
         batch.end();
 
@@ -344,10 +265,9 @@ public class Dungeon extends Screen_{
 
         }
 
-       /* GUIbatch.begin();
-        generateButton.render(GUIbatch);
-        generateButton.logic(mPos);
-        GUIbatch.end();*/
+        GUIbatch.begin();
+        GUIbatch.draw(almostlighting, 0, 0);
+        GUIbatch.end();
         // Not right but idk
 
 
@@ -382,34 +302,6 @@ public class Dungeon extends Screen_{
 
         System.out.println("Generating new map");
         map = generator.GenerateMap(75, 75, 10);
-
-    }
-
-    public boolean xOnTile(int x) {
-
-        if (x % 32 == 0) {
-
-            return true;
-
-        } else {
-
-            return  false;
-
-        }
-
-    }
-
-    public boolean yOnTile(int y) {
-
-        if (y % 32 == 0) {
-
-            return true;
-
-        } else {
-
-            return  false;
-
-        }
 
     }
 
