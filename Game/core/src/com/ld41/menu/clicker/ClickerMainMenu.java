@@ -51,7 +51,10 @@ public class ClickerMainMenu extends Screen_ {
     String ponyString;
     Boolean haveRightTower;
     Button_ rightTowerButton;
-    Texture rightTower;
+    Texture rightTowerBody;
+    Boolean haveLeftTower;
+    Button_ leftTowerButton;
+    Texture leftTowerBody;
 
     public ClickerMainMenu(Game game) {
         super(game);
@@ -99,6 +102,7 @@ public class ClickerMainMenu extends Screen_ {
 
                 // restoring towers
                 haveRightTower = Boolean.parseBoolean(properties.getProperty("haveRightTower"));
+                haveLeftTower = Boolean.parseBoolean(properties.getProperty("haveLeftTower"));
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -122,6 +126,7 @@ public class ClickerMainMenu extends Screen_ {
             ponyStringPrice = "Price: " + ponyPrice;
 
             haveRightTower = false;
+            haveLeftTower = false;
         }
 
         height = Gdx.graphics.getHeight();
@@ -164,6 +169,8 @@ public class ClickerMainMenu extends Screen_ {
         ponyButton = new Button_(10, Gdx.graphics.getHeight() - 260, "trainPony");
         ponyButton.onClick(() -> trainPony());
 
+        //todo: add dynamite
+
         /*
 
             Castle upgrades Menu
@@ -171,9 +178,15 @@ public class ClickerMainMenu extends Screen_ {
          */
 
         // add right tower upgrade button
+        rightTowerBody = new Texture(Gdx.files.internal("castle/rightTowerBody.png"));
+        leftTowerBody = new Texture(Gdx.files.internal("castle/leftTowerBody.png"));
+
         rightTowerButton = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 100, "buildRightTower");
         rightTowerButton.onClick(() -> buildRightTower());
-        rightTower = new Texture(Gdx.files.internal("castle/towerBody.png"));
+
+        // add left tower upgrade button
+        leftTowerButton = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 180, "buildLeftTower");
+        leftTowerButton.onClick(() -> buildLeftTower());
         }
 
     @Override
@@ -197,6 +210,9 @@ public class ClickerMainMenu extends Screen_ {
         if (!haveRightTower) {
             rightTowerButton.render(batch);
         }
+        if (!haveLeftTower) {
+            leftTowerButton.render(batch);
+        }
 
         // update gold counter and gps counter
         font.draw(batch, goldString, 10, Gdx.graphics.getHeight() - 10);
@@ -215,7 +231,10 @@ public class ClickerMainMenu extends Screen_ {
         font.draw(batch, ponyString, 115, Gdx.graphics.getHeight() - 235);
 
         if (haveRightTower) {
-            batch.draw(rightTower, x , 0);
+            batch.draw(rightTowerBody, x , 0);
+        }
+        if (haveLeftTower) {
+            batch.draw(leftTowerBody, x, 0);
         }
 
         batch.end();
@@ -233,6 +252,9 @@ public class ClickerMainMenu extends Screen_ {
 
         if (!haveRightTower) {
             rightTowerButton.logic(mPos);
+        }
+        if (!haveLeftTower) {
+            leftTowerButton.logic(mPos);
         }
 
         // updates the gold every second
@@ -339,6 +361,14 @@ public class ClickerMainMenu extends Screen_ {
         if (goldCounter >= 1) {
             haveRightTower = true;
 
+        } else {
+            System.out.println("Not enough gold");
+        }
+    }
+
+    public void buildLeftTower() {
+        if (goldCounter >= 1) {
+            haveLeftTower = true;
         } else {
             System.out.println("Not enough gold");
         }
