@@ -13,6 +13,12 @@ import com.ld41.main.Game;
 import com.ld41.map.Dungeon;
 import com.ld41.menu.Menu;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Properties;
+
 
 public class ClickerMainMenu extends Screen_ {
 
@@ -70,7 +76,7 @@ public class ClickerMainMenu extends Screen_ {
         batch = new SpriteBatch();
 
         // add main castle texture
-        castle = new Texture(Gdx.files.internal("alex/Castle.png"));
+        castle = new Texture(Gdx.files.internal("castle/starterCastle.png"));
 
         // add button that adds 1 gold to total
         clickerButton = new Button_((width / 2 - 48), height - 40, "clickGold");
@@ -226,6 +232,23 @@ public class ClickerMainMenu extends Screen_ {
     }
 
     public void sendToMainMenu() {
+        try {
+            Properties properties = new Properties();
+            properties.setProperty("gold", String.valueOf(goldCounter));
+            properties.setProperty("gps", String.valueOf(gps));
+            properties.setProperty("pickaxePrice", String.valueOf(pickaxePrice));
+            properties.setProperty("pickaxeCounter", String.valueOf(pickaxeCounter));
+            properties.setProperty("minerPrice", String.valueOf(minerPrice));
+            properties.setProperty("minerCounter", String.valueOf(minerCounter));
+
+            File file = new File("d:\\Other\\Coding\\ld-41", "save.properties");
+            System.out.println(file.getAbsolutePath());
+            FileOutputStream fileOut = new FileOutputStream(file);
+            properties.store(fileOut,"Ludum Dare 41 Save" );
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         getGame().setScreen(new Menu(getGame()));
         this.dispose();
