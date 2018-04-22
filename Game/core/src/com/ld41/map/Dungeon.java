@@ -6,6 +6,7 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.ld41.core.Button_;
 import com.ld41.core.Screen_;
@@ -19,7 +20,7 @@ public class Dungeon extends Screen_{
     Vector3 mPos;
     MapGeneration generator;
     int[][] map;
-    Texture wall, debug;
+    Texture wall, debug, debug2;
 
     boolean wPressed, aPressed, dPressed, sPressed;
 
@@ -44,6 +45,7 @@ public class Dungeon extends Screen_{
         camera.position.x = generator.character.getX() - 16;
         camera.position.y = generator.character.getY() - 16;
         debug = new Texture("map/debug.png");
+        debug2 = new Texture("map/debug2.png");
 
         Gdx.input.setInputProcessor(new InputAdapter() {
 
@@ -161,7 +163,132 @@ public class Dungeon extends Screen_{
 
         generator.character.render(batch);
 
+        if (wPressed) {
+
+            boolean canMove = true;
+
+            batch.draw(debug2, generator.character.x, generator.character.y);
+
+            for (Rectangle r : generator.collisions) {
+
+                batch.draw(debug, r.x, r.y);
+
+                Rectangle pR = new Rectangle(generator.character.getX(), generator.character.getY() + 2, 32, 32);
+
+                if (r.contains(pR) || pR.contains(r) || r.overlaps(pR) || pR.overlaps(r)) {
+
+                    System.out.println("TEST");
+
+                    canMove = false;
+                    break;
+
+                }
+
+            }
+
+            if (canMove) {
+
+                generator.character.setY(generator.character.getY() + 2);
+
+            }
+
+        }
+
         if (aPressed) {
+
+            boolean canMove = true;
+
+            batch.draw(debug2, generator.character.x, generator.character.y);
+
+            for (Rectangle r : generator.collisions) {
+
+                batch.draw(debug, r.x, r.y);
+
+                Rectangle pR = new Rectangle(generator.character.getX() - 2, generator.character.getY(), 32, 32);
+
+                if (r.contains(pR) || pR.contains(r) || r.overlaps(pR) || pR.overlaps(r)) {
+
+                    System.out.println("TEST");
+
+                    canMove = false;
+                    break;
+
+                }
+
+            }
+
+            if (canMove) {
+
+                generator.character.setX(generator.character.getX() - 2);
+
+            }
+
+        }
+
+        if (sPressed) {
+
+            boolean canMove = true;
+
+            batch.draw(debug2, generator.character.x, generator.character.y);
+
+            for (Rectangle r : generator.collisions) {
+
+                batch.draw(debug, r.x, r.y);
+
+                Rectangle pR = new Rectangle(generator.character.getX(), generator.character.getY() - 2, 32, 32);
+
+                if (r.contains(pR) || pR.contains(r) || r.overlaps(pR) || pR.overlaps(r)) {
+
+                    System.out.println("TEST");
+
+                    canMove = false;
+                    break;
+
+                }
+
+            }
+
+            if (canMove) {
+
+                generator.character.setY(generator.character.getY() - 2);
+
+            }
+
+        }
+
+
+        if (dPressed) {
+
+            boolean canMove = true;
+
+            batch.draw(debug2, generator.character.x, generator.character.y);
+
+            for (Rectangle r : generator.collisions) {
+
+                batch.draw(debug, r.x, r.y);
+
+                Rectangle pR = new Rectangle(generator.character.getX() + 2, generator.character.getY(), 32, 32);
+
+                if (r.contains(pR) || pR.contains(r) || r.overlaps(pR) || pR.overlaps(r)) {
+
+                    System.out.println("TEST");
+
+                    canMove = false;
+                    break;
+
+                }
+
+            }
+
+            if (canMove) {
+
+                generator.character.setX(generator.character.getX() + 2);
+
+            }
+
+        }
+
+        /*if (aPressed) {
 
             int tileOnLeft = map[((generator.character.getX() - 2) / 32)][generator.character.getY() / 32];
             if (tileOnLeft == 0) {
@@ -196,14 +323,15 @@ public class Dungeon extends Screen_{
 
         if (sPressed) {
 
-            int tileBellow = map[(generator.character.getX() / 32)][((generator.character.getY() - 2) / 32)];
+            int tileBellow = map[(generator.character.getX() / 32)][((generator.character.getY() - 4) / 32)];
             if (tileBellow == 0) {
 
                 generator.character.setY(generator.character.getY() - 2);
 
             }
 
-        }
+        }*/
+
 
         batch.end();
 
