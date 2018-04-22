@@ -6,12 +6,17 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Timer;
 import com.ld41.core.Button_;
 import com.ld41.core.Screen_;
 import com.ld41.main.Game;
 import com.ld41.map.Dungeon;
 import com.ld41.menu.Menu;
 
+import javax.xml.soap.Text;
 import java.io.*;
 import java.util.Properties;
 
@@ -19,6 +24,7 @@ import java.util.Properties;
 public class ClickerMainMenu extends Screen_ {
 
     private Texture castle, bg;
+    private Stage stage;
     private OrthographicCamera camera;
     private SpriteBatch batch;
     private Button_ clickerButton;
@@ -65,6 +71,8 @@ public class ClickerMainMenu extends Screen_ {
     private Button_ mainTowerButton;
     private Texture mainTower;
     private Button_ dynamiteButton;
+    private boolean isAlert;
+    private Texture alert;
 
     public ClickerMainMenu(Game game) {
         super(game);
@@ -168,6 +176,9 @@ public class ClickerMainMenu extends Screen_ {
 
         // Add background texture
         bg = new Texture("castle/Background2.png");
+
+        // Add
+        alert = new Texture(Gdx.files.internal("moneyAlert.png"));
 
         // add button that adds 1 gold to total
         clickerButton = new Button_((width / 2 - 48), Gdx.graphics.getHeight() - 80, "clickGold");
@@ -319,6 +330,17 @@ public class ClickerMainMenu extends Screen_ {
             batch.draw(mainTower, x, 0);
         }
 
+        if (isAlert) {
+            batch.draw(alert, (Gdx.graphics.getWidth() / 2) - 48, (Gdx.graphics.getHeight() / 2) + 230);
+
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    turnOffAlert();
+                }
+            }, 2, 999999999); // I have no idea why this has to be so large
+        }
+
         batch.end();
 
         Vector3 mPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -348,6 +370,7 @@ public class ClickerMainMenu extends Screen_ {
         if (!haveMainTower) {
             mainTowerButton.logic(mPos);
         }
+
 
         // updates the gold every second
         deltaTimer += delta;
@@ -404,7 +427,7 @@ public class ClickerMainMenu extends Screen_ {
                 gpsString = "Gold per Second: " + gps;
             }
         } else {
-            System.out.println("Not enough gold");
+            moneyAlert();
         }
     }
 
@@ -425,7 +448,7 @@ public class ClickerMainMenu extends Screen_ {
             }
 
         } else {
-            System.out.println("Not enough gold");
+            moneyAlert();
         }
     }
 
@@ -444,7 +467,7 @@ public class ClickerMainMenu extends Screen_ {
                 gpsString = "Gold per second: " + gps;
             }
         } else {
-            System.out.println("Not enough gold");
+            moneyAlert();
         }
     }
 
@@ -461,9 +484,9 @@ public class ClickerMainMenu extends Screen_ {
                 dynamiteStringPrice = "Price: " + dynamitePrice;
                 gps += dynamiteCounter * 10;
                 gpsString = "Gold per second: " + gps;
-            } else {
-                System.out.println("Not enough gold");
             }
+        } else {
+            moneyAlert();
         }
     }
 
@@ -473,7 +496,7 @@ public class ClickerMainMenu extends Screen_ {
             haveRightTower = true;
 
         } else {
-            System.out.println("Not enough gold");
+            moneyAlert();
         }
     }
 
@@ -481,7 +504,7 @@ public class ClickerMainMenu extends Screen_ {
         if (goldCounter >= 1) {
             haveLeftTower = true;
         } else {
-            System.out.println("Not enough gold");
+            moneyAlert();
         }
     }
 
@@ -489,7 +512,7 @@ public class ClickerMainMenu extends Screen_ {
         if (goldCounter >= 1) {
             haveRightTurret = true;
         } else {
-            System.out.println("Not enough gold");
+            moneyAlert();
         }
     }
 
@@ -497,7 +520,7 @@ public class ClickerMainMenu extends Screen_ {
         if (goldCounter >= 1) {
             haveLeftTurret = true;
         } else {
-            System.out.println("Not enough gold");
+            moneyAlert();
         }
     }
 
@@ -505,7 +528,7 @@ public class ClickerMainMenu extends Screen_ {
         if (goldCounter >= 1) {
             haveMainTower = true;
         } else {
-            System.out.println("Not enough gold");
+            moneyAlert();
         }
     }
 
@@ -532,6 +555,14 @@ public class ClickerMainMenu extends Screen_ {
         goldCounter = goldCounter + gps;
         goldString = "Gold: " + String.valueOf(goldCounter);
 
+    }
+
+    private void moneyAlert() {
+        isAlert = true;
+    }
+
+    private void turnOffAlert() {
+        isAlert = false;
     }
 
     private void saveToFile() {
