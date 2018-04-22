@@ -19,45 +19,52 @@ import java.util.Properties;
 public class ClickerMainMenu extends Screen_ {
 
     private Texture castle, bg;
-    OrthographicCamera camera;
-    SpriteBatch batch;
-    Button_ clickerButton;
-    Vector3 mPos;
-    int x;
-    int goldCounter;
-    String goldString;
-    BitmapFont font;
-    Button_ dungeonButton;
-    Button_ minerButton;
-    int minerCounter;
-    int pickaxeCounter;
-    int pickaxePrice;
-    String pickaxeString;
-    String pickaxeStringPrice;
-    String minerString;
-    String minerStringPrice;
-    float deltaTimer;
-    int height;
-    int width;
-    int minerPrice;
-    int gps;
-    Button_ mainMenuButton;
-    Button_ pickaxeButton;
-    String gpsString;
-    Button_ ponyButton;
-    int ponyPrice;
-    int ponyCounter;
-    String ponyStringPrice;
-    String ponyString;
-    Boolean haveRightTower;
-    Button_ rightTowerButton;
-    Texture rightTowerBody;
-    Boolean haveLeftTower;
-    Button_ leftTowerButton;
-    Texture leftTowerBody;
-    boolean haveRightTurret;
-    Button_ rightTurretButton;
-    Texture rightTurret;
+    private OrthographicCamera camera;
+    private SpriteBatch batch;
+    private Button_ clickerButton;
+    private int goldCounter;
+    private String goldString;
+    private BitmapFont font;
+    private Button_ dungeonButton;
+    private Button_ minerButton;
+    private int minerCounter;
+    private int pickaxeCounter;
+    private int pickaxePrice;
+    private String pickaxeString;
+    private String pickaxeStringPrice;
+    private int dynamiteCounter;
+    private int dynamitePrice;
+    private String dynamiteString;
+    private String dynamiteStringPrice;
+    private String minerString;
+    private String minerStringPrice;
+    private float deltaTimer;
+    private int minerPrice;
+    private int gps;
+    private Button_ mainMenuButton;
+    private Button_ pickaxeButton;
+    private String gpsString;
+    private Button_ ponyButton;
+    private int ponyPrice;
+    private int ponyCounter;
+    private String ponyStringPrice;
+    private String ponyString;
+    private boolean haveRightTower;
+    private Button_ rightTowerButton;
+    private Texture rightTowerBody;
+    private boolean haveLeftTower;
+    private Button_ leftTowerButton;
+    private Texture leftTowerBody;
+    private boolean haveRightTurret;
+    private Button_ rightTurretButton;
+    private Texture rightTurret;
+    private boolean haveLeftTurret;
+    private Button_ leftTurretButton;
+    private Texture leftTurret;
+    private boolean haveMainTower;
+    private Button_ mainTowerButton;
+    private Texture mainTower;
+    private Button_ dynamiteButton;
 
     public ClickerMainMenu(Game game) {
         super(game);
@@ -103,11 +110,18 @@ public class ClickerMainMenu extends Screen_ {
                 ponyStringPrice = "Price: " + ponyPrice;
                 ponyString = "Miners: " + ponyCounter;
 
+                // restoring dynamite
+                dynamiteCounter = Integer.parseInt(properties.getProperty("dynamiteCounter"));
+                dynamitePrice = Integer.parseInt(properties.getProperty("dynamitePrice"));
+                dynamiteStringPrice = "Price: " + dynamitePrice;
+                dynamiteString = "Dynamite: " + dynamiteCounter;
+
                 // restoring towers
                 haveRightTower = Boolean.parseBoolean(properties.getProperty("haveRightTower"));
                 haveLeftTower = Boolean.parseBoolean(properties.getProperty("haveLeftTower"));
                 haveRightTurret = Boolean.parseBoolean(properties.getProperty("haveRightTurret"));
-
+                haveLeftTurret = Boolean.parseBoolean(properties.getProperty("haveLeftTurret"));
+                haveMainTower = Boolean.parseBoolean(properties.getProperty("haveMainTower"));
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -130,13 +144,19 @@ public class ClickerMainMenu extends Screen_ {
             ponyString = "Ponies: 0";
             ponyStringPrice = "Price: " + ponyPrice;
 
+            dynamitePrice = 250;
+            dynamiteString = "Dynamite: 0";
+            dynamiteStringPrice = "Price: " + dynamitePrice;
+
             haveRightTower = false;
             haveLeftTower = false;
             haveRightTurret = false;
+            haveLeftTurret = false;
+            haveMainTower = false;
         }
 
-        height = Gdx.graphics.getHeight();
-        width = Gdx.graphics.getWidth();
+        int height = Gdx.graphics.getHeight();
+        int width = Gdx.graphics.getWidth();
 
         camera = new OrthographicCamera(width, height);
         camera.position.x = width / 2;
@@ -178,7 +198,9 @@ public class ClickerMainMenu extends Screen_ {
         ponyButton = new Button_(10, Gdx.graphics.getHeight() - 260, "trainPony");
         ponyButton.onClick(() -> trainPony());
 
-        //todo: add dynamite
+        //add buy dynamite button
+        dynamiteButton = new Button_(10, Gdx.graphics.getHeight() - 340, "buyDynamite");
+        dynamiteButton.onClick(() -> buyDynamite());
 
         /*
 
@@ -189,6 +211,8 @@ public class ClickerMainMenu extends Screen_ {
         rightTowerBody = new Texture(Gdx.files.internal("castle/rightTowerBody.png"));
         leftTowerBody = new Texture(Gdx.files.internal("castle/leftTowerBody.png"));
         rightTurret = new Texture(Gdx.files.internal("castle/rightTurret.png"));
+        leftTurret = new Texture(Gdx.files.internal("castle/leftTurret.png"));
+        mainTower = new Texture(Gdx.files.internal("castle/mainTower.png"));
 
         // add right tower upgrade button
         rightTowerButton = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 100, "buildRightTower");
@@ -198,9 +222,17 @@ public class ClickerMainMenu extends Screen_ {
         leftTowerButton = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 180, "buildLeftTower");
         leftTowerButton.onClick(() -> buildLeftTower());
 
-        // add right tower
+        // add right turret
         rightTurretButton = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 260, "buildRightTurret");
         rightTurretButton.onClick(() -> buildRightTurret());
+
+        // add left turret
+        leftTurretButton = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 340, "buildLeftTurret");
+        leftTurretButton.onClick(() -> buildLeftTurret());
+
+        // add main tower
+        mainTowerButton = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 420, "buildMainTower");
+        mainTowerButton.onClick(() -> buildMainTower());
     }
 
     @Override
@@ -214,7 +246,7 @@ public class ClickerMainMenu extends Screen_ {
         batch.draw(bg, 0, 0);
 
         // draw castle texture and buttons
-        x = (Gdx.graphics.getWidth() / 2) - (castle.getWidth() / 2);
+        int x = (Gdx.graphics.getWidth() / 2) - (castle.getWidth() / 2);
         batch.draw(castle, x, 0);
         clickerButton.render(batch);
         dungeonButton.render(batch);
@@ -222,15 +254,33 @@ public class ClickerMainMenu extends Screen_ {
         mainMenuButton.render(batch);
         pickaxeButton.render(batch);
         ponyButton.render(batch);
+        dynamiteButton.render(batch);
+
+        String rightTowerPrice = "Price: 1000";
+        String leftTowerPrice = "Price: 2000";
+        String rightTurretPrice = "Price: 3000";
+        String leftTurretPrice = "Price: 4000";
+        String mainTowerPrice = "Price: 5000";
 
         if (!haveRightTower) {
             rightTowerButton.render(batch);
+            font.draw(batch, rightTowerPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 60);
         }
         if (!haveLeftTower) {
             leftTowerButton.render(batch);
+            font.draw(batch, leftTowerPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 140);
         }
         if (!haveRightTurret) {
             rightTurretButton.render(batch);
+            font.draw(batch, rightTurretPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 220);
+        }
+        if (!haveLeftTurret) {
+            leftTurretButton.render(batch);
+            font.draw(batch, leftTurretPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 300);
+        }
+        if (!haveMainTower) {
+            mainTowerButton.render(batch);
+            font.draw(batch, mainTowerPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 380);
         }
 
         // update gold counter and gps counter
@@ -249,8 +299,12 @@ public class ClickerMainMenu extends Screen_ {
         font.draw(batch, ponyStringPrice, 115, Gdx.graphics.getHeight() - 205);
         font.draw(batch, ponyString, 115, Gdx.graphics.getHeight() - 235);
 
+        // add and update dynamite counter and price
+        font.draw(batch, dynamiteStringPrice, 115, Gdx.graphics.getHeight() - 285);
+        font.draw(batch, dynamiteString, 115, Gdx.graphics.getHeight() - 315);
+
         if (haveRightTower) {
-            batch.draw(rightTowerBody, x , 0);
+            batch.draw(rightTowerBody, x, 0);
         }
         if (haveLeftTower) {
             batch.draw(leftTowerBody, x, 0);
@@ -258,10 +312,16 @@ public class ClickerMainMenu extends Screen_ {
         if (haveRightTurret) {
             batch.draw(rightTurret, x, 0);
         }
+        if (haveLeftTurret) {
+            batch.draw(leftTurret, x, 0);
+        }
+        if (haveMainTower) {
+            batch.draw(mainTower, x, 0);
+        }
 
         batch.end();
 
-        mPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        Vector3 mPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(mPos);
 
         // add hover functionality to buttons
@@ -271,6 +331,7 @@ public class ClickerMainMenu extends Screen_ {
         mainMenuButton.logic(mPos);
         pickaxeButton.logic(mPos);
         ponyButton.logic(mPos);
+        dynamiteButton.logic(mPos);
 
         if (!haveRightTower) {
             rightTowerButton.logic(mPos);
@@ -280,6 +341,12 @@ public class ClickerMainMenu extends Screen_ {
         }
         if (!haveRightTurret) {
             rightTurretButton.logic(mPos);
+        }
+        if (!haveLeftTurret) {
+            leftTurretButton.logic(mPos);
+        }
+        if (!haveMainTower) {
+            mainTowerButton.logic(mPos);
         }
 
         // updates the gold every second
@@ -316,14 +383,14 @@ public class ClickerMainMenu extends Screen_ {
 
     }
 
-    public void increaseGold() {
+    private void increaseGold() {
         goldCounter ++;
 
         goldString = "Gold: " + String.valueOf(goldCounter);
         System.out.println(String.valueOf(goldCounter));
     }
 
-    public void upgradePickaxe() {
+    private void upgradePickaxe() {
         if (goldCounter >= pickaxePrice) {
             pickaxeCounter ++;
             pickaxeString = "Pickaxe Upgrades: " + String.valueOf(pickaxeCounter);
@@ -341,7 +408,7 @@ public class ClickerMainMenu extends Screen_ {
         }
     }
 
-    public void addMiner() {
+    private void addMiner() {
 
         if (goldCounter >= minerPrice) {
             minerCounter ++;
@@ -362,7 +429,7 @@ public class ClickerMainMenu extends Screen_ {
         }
     }
 
-    public void trainPony() {
+    private void trainPony() {
 
         if (goldCounter >= ponyPrice) {
             ponyCounter ++;
@@ -372,7 +439,7 @@ public class ClickerMainMenu extends Screen_ {
 
             if (ponyCounter > 0) {
                 ponyPrice += ponyPrice * 0.5;
-                ponyStringPrice = "Price " + ponyPrice;
+                ponyStringPrice = "Price: " + ponyPrice;
                 gps += ponyCounter * 5;
                 gpsString = "Gold per second: " + gps;
             }
@@ -381,7 +448,26 @@ public class ClickerMainMenu extends Screen_ {
         }
     }
 
-    public void buildRightTower() {
+    private void buyDynamite() {
+
+        if (goldCounter >= dynamitePrice) {
+            dynamiteCounter ++;
+            dynamiteString = "Dynamite: " + String.valueOf(dynamiteCounter);
+            goldCounter -= dynamitePrice;
+            goldString = "Gold :" + String.valueOf(goldCounter);
+
+            if (dynamiteCounter > 0) {
+                dynamitePrice += dynamitePrice * 0.6;
+                dynamiteStringPrice = "Price: " + dynamitePrice;
+                gps += dynamiteCounter * 10;
+                gpsString = "Gold per second: " + gps;
+            } else {
+                System.out.println("Not enough gold");
+            }
+        }
+    }
+
+    private void buildRightTower() {
 
         if (goldCounter >= 1) {
             haveRightTower = true;
@@ -391,7 +477,7 @@ public class ClickerMainMenu extends Screen_ {
         }
     }
 
-    public void buildLeftTower() {
+    private void buildLeftTower() {
         if (goldCounter >= 1) {
             haveLeftTower = true;
         } else {
@@ -399,7 +485,7 @@ public class ClickerMainMenu extends Screen_ {
         }
     }
 
-    public void buildRightTurret() {
+    private void buildRightTurret() {
         if (goldCounter >= 1) {
             haveRightTurret = true;
         } else {
@@ -407,8 +493,24 @@ public class ClickerMainMenu extends Screen_ {
         }
     }
 
+    private void buildLeftTurret() {
+        if (goldCounter >= 1) {
+            haveLeftTurret = true;
+        } else {
+            System.out.println("Not enough gold");
+        }
+    }
 
-    public void sendToDungeon() {
+    private void buildMainTower() {
+        if (goldCounter >= 1) {
+            haveMainTower = true;
+        } else {
+            System.out.println("Not enough gold");
+        }
+    }
+
+
+    private void sendToDungeon() {
         saveToFile();
 
         getGame().setScreen(new Dungeon(getGame()));
@@ -416,7 +518,7 @@ public class ClickerMainMenu extends Screen_ {
 
     }
 
-    public void sendToMainMenu() {
+    private void sendToMainMenu() {
 
         saveToFile();
 
@@ -425,14 +527,14 @@ public class ClickerMainMenu extends Screen_ {
 
     }
 
-    public void updateGold() {
+    private void updateGold() {
 
         goldCounter = goldCounter + gps;
         goldString = "Gold: " + String.valueOf(goldCounter);
 
     }
 
-    public void saveToFile() {
+    private void saveToFile() {
         try {
             Properties properties = new Properties();
             properties.setProperty("gold", String.valueOf(goldCounter));
@@ -447,9 +549,14 @@ public class ClickerMainMenu extends Screen_ {
             properties.setProperty("ponyPrice", String.valueOf(ponyPrice));
             properties.setProperty("ponyCounter", String.valueOf(ponyCounter));
 
+            properties.setProperty("dynamitePrice", String.valueOf(dynamitePrice));
+            properties.setProperty("dynamiteCounter", String.valueOf(dynamiteCounter));
+
             properties.setProperty("haveRightTower", String.valueOf(haveRightTower));
             properties.setProperty("haveLeftTower", String.valueOf(haveLeftTower));
             properties.setProperty("haveRightTurret", String.valueOf(haveRightTurret));
+            properties.setProperty("haveLeftTurret", String.valueOf(haveLeftTurret));
+            properties.setProperty("haveMainTower", String.valueOf(haveMainTower));
 
             File file = new File("save.properties");
             System.out.println(file.getAbsolutePath());
