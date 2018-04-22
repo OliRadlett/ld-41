@@ -13,8 +13,9 @@ public class MapGeneration {
     List<hCorridor> hCorridors;
     List<vCorridor> vCorridors;
     public List<Rectangle> collisions;
-    int empty = 0;
-    int wall = 1;
+    public int empty = 0;
+    public int wall = 1;
+    public int chest = 2;
     int numRooms;
     int roomWidth;
     int roomHeight;
@@ -160,6 +161,29 @@ public class MapGeneration {
             }
 
         }
+
+        boolean chestPlaced = false;
+
+        while (!chestPlaced) {
+
+            int chestPosX = r.nextInt(width) + 1;
+            int chestPosY = r.nextInt(height) + 1;
+
+            if (map[chestPosX][chestPosY] == empty) {
+
+                map[chestPosX][chestPosX] = chest;
+                chestPlaced = true;
+
+                System.out.println("Empty");
+
+            } else {
+
+                System.out.println("Wall");
+
+            }
+
+        }
+
 
         return map;
 

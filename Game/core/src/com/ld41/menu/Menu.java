@@ -2,6 +2,7 @@ package com.ld41.menu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.ld41.core.Button_;
@@ -16,6 +17,7 @@ public class Menu extends Screen_ {
     OrthographicCamera camera;
     Vector3 mPos;
     Button_ toClickerMenuButton;
+    Texture bg;
 
     public Menu(Game game) {
         super(game);
@@ -30,11 +32,13 @@ public class Menu extends Screen_ {
         batch = new SpriteBatch();
 
         // button to exit game
-        exitButton = new Button_((Gdx.graphics.getWidth() / 2) - 48, 64, "exit");
+        exitButton = new Button_((Gdx.graphics.getWidth() / 2) - 135, 64, "exit");
         exitButton.onClick(() -> Exit());
         // button to switch to main menu
-        toClickerMenuButton = new Button_((Gdx.graphics.getWidth() / 2 - 48), 700, "toClickerMainMenu" );
+        toClickerMenuButton = new Button_((Gdx.graphics.getWidth() / 2 - 135), 275, "toClickerMainMenu" );
         toClickerMenuButton.onClick(() -> switchScreenToMainMenu());
+
+        bg = new Texture("castle/background.png");
 
     }
 
@@ -45,6 +49,8 @@ public class Menu extends Screen_ {
         camera.update();
 
         batch.begin();
+
+        batch.draw(bg, 0, 0);
 
         exitButton.render(batch);
         toClickerMenuButton.render(batch);
