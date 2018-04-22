@@ -44,6 +44,7 @@ public class ClickerMainMenu extends Screen_ {
     int gps;
     Button_ mainMenuButton;
     Button_ pickaxeButton;
+    String gpsString;
 
     public ClickerMainMenu(Game game) {
         super(game);
@@ -77,12 +78,15 @@ public class ClickerMainMenu extends Screen_ {
                 pickaxeString = "Pickaxes Upgrades: " + pickaxeCounter;
                 minerStringPrice = "Price: " + minerPrice;
                 minerString = "Miners: " + minerCounter;
+                gpsString = "Gold per Second: " + gps;
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
             goldCounter = 0;
+            gps = 0;
+            gpsString = "Gold per Second: 0";
             goldString = "Gold: 0";
             minerString = "Miners: 0";
             minerPrice = 50;
@@ -103,7 +107,7 @@ public class ClickerMainMenu extends Screen_ {
         batch = new SpriteBatch();
 
         // add main castle texture
-        castle = new Texture(Gdx.files.internal("castle/starterCastle.png"));
+        castle = new Texture(Gdx.files.internal("castle/castleMain.png"));
 
         // add button that adds 1 gold to total
         clickerButton = new Button_((width / 2 - 48), height - 40, "clickGold");
@@ -130,6 +134,8 @@ public class ClickerMainMenu extends Screen_ {
         minerButton = new Button_(10, Gdx.graphics.getHeight() - 180, "addMiner");
         minerButton.onClick(() -> addMiner());
 
+        //
+
         }
 
     @Override
@@ -149,8 +155,9 @@ public class ClickerMainMenu extends Screen_ {
         mainMenuButton.render(batch);
         pickaxeButton.render(batch);
 
-        // update gold counter
+        // update gold counter and gps counter
         font.draw(batch, goldString, 10, Gdx.graphics.getHeight() - 10);
+        font.draw(batch, gpsString, 115, Gdx.graphics.getHeight() - 10);
 
         // add and update pickaxe counter and price
         font.draw(batch, pickaxeStringPrice, 115, Gdx.graphics.getHeight() - 45);
@@ -224,6 +231,7 @@ public class ClickerMainMenu extends Screen_ {
                 pickaxePrice += pickaxePrice * 0.6;
                 pickaxeStringPrice = "Price " + pickaxePrice;
                 gps += pickaxeCounter;
+                gpsString = "Gold per Second: " + gps;
             }
         } else {
             System.out.println("Not enough gold");
@@ -243,6 +251,7 @@ public class ClickerMainMenu extends Screen_ {
                 minerPrice += minerPrice * 0.5;
                 minerStringPrice = "Price: " + minerPrice;
                 gps += minerCounter * 2;
+                gpsString = "Gold per Second: " + gps;
             }
 
         } else {
