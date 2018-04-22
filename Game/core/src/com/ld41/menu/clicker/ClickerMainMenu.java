@@ -150,7 +150,7 @@ public class ClickerMainMenu extends Screen_ {
         bg = new Texture("castle/background.png");
 
         // add button that adds 1 gold to total
-        clickerButton = new Button_((width / 2 - 48), height - 40, "clickGold");
+        clickerButton = new Button_((width / 2 - 48), Gdx.graphics.getHeight() - 80, "clickGold");
         clickerButton.onClick(() -> increaseGold());
 
         // add button that goes to dungeon... todo: or will do when I make it do that
