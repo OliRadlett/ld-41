@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Timer;
 import com.ld41.core.Button_;
 import com.ld41.core.Screen_;
 import com.ld41.main.Game;
@@ -44,6 +43,15 @@ public class ClickerMainMenu extends Screen_ {
     int gps;
     Button_ mainMenuButton;
     Button_ pickaxeButton;
+    String gpsString;
+    Button_ ponyButton;
+    int ponyPrice;
+    int ponyCounter;
+    String ponyStringPrice;
+    String ponyString;
+    Boolean haveRightTower;
+    Button_ rightTowerButton;
+    Texture rightTower;
 
     public ClickerMainMenu(Game game) {
         super(game);
@@ -65,33 +73,55 @@ public class ClickerMainMenu extends Screen_ {
                 properties.load(fileInput);
                 fileInput.close();
 
+                // restoring gold
                 goldCounter = Integer.parseInt(properties.getProperty("gold"));
                 gps = Integer.parseInt(properties.getProperty("gps"));
+                goldString = "Gold: " + goldCounter;
+                gpsString = "Gold per Second: " + gps;
+
+                // restoring pickaxe upgrades
                 pickaxePrice = Integer.parseInt(properties.getProperty("pickaxePrice"));
                 pickaxeCounter = Integer.parseInt(properties.getProperty("pickaxeCounter"));
-                minerCounter = Integer.parseInt(properties.getProperty("minerCounter"));
-                minerPrice = Integer.parseInt(properties.getProperty("minerPrice"));
-
-                goldString = "Gold: " + goldCounter;
                 pickaxeStringPrice = "Price: " + pickaxePrice;
                 pickaxeString = "Pickaxes Upgrades: " + pickaxeCounter;
+
+                // restoring miners
+                minerCounter = Integer.parseInt(properties.getProperty("minerCounter"));
+                minerPrice = Integer.parseInt(properties.getProperty("minerPrice"));
                 minerStringPrice = "Price: " + minerPrice;
                 minerString = "Miners: " + minerCounter;
+
+                // restoring ponies
+                ponyCounter = Integer.parseInt(properties.getProperty("ponyCounter"));
+                ponyPrice = Integer.parseInt(properties.getProperty("ponyPrice"));
+                ponyStringPrice = "Price: " + ponyPrice;
+                ponyString = "Miners: " + ponyCounter;
+
+                // restoring towers
+                haveRightTower = Boolean.parseBoolean(properties.getProperty("haveRightTower"));
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
             goldCounter = 0;
+            gps = 0;
+            gpsString = "Gold per Second: 0";
             goldString = "Gold: 0";
-            minerString = "Miners: 0";
-            minerPrice = 50;
-            minerStringPrice = "Price: " + minerPrice;
 
             pickaxePrice = 25;
             pickaxeString = "Pickaxe Upgrades: 0";
             pickaxeStringPrice = "Price: " + pickaxePrice;
 
+            minerString = "Miners: 0";
+            minerPrice = 50;
+            minerStringPrice = "Price: " + minerPrice;
+
+            ponyPrice = 120;
+            ponyString = "Ponies: 0";
+            ponyStringPrice = "Price: " + ponyPrice;
+
+            haveRightTower = false;
         }
 
         height = Gdx.graphics.getHeight();
@@ -103,7 +133,7 @@ public class ClickerMainMenu extends Screen_ {
         batch = new SpriteBatch();
 
         // add main castle texture
-        castle = new Texture(Gdx.files.internal("castle/starterCastle.png"));
+        castle = new Texture(Gdx.files.internal("castle/castleMain.png"));
 
         // add button that adds 1 gold to total
         clickerButton = new Button_((width / 2 - 48), height - 40, "clickGold");
@@ -119,7 +149,7 @@ public class ClickerMainMenu extends Screen_ {
 
 
         /*
-            upgrades menu
+            Gold upgrades menu
          */
 
         // add upgrade pickaxe button
@@ -130,6 +160,20 @@ public class ClickerMainMenu extends Screen_ {
         minerButton = new Button_(10, Gdx.graphics.getHeight() - 180, "addMiner");
         minerButton.onClick(() -> addMiner());
 
+        // add pit pony button
+        ponyButton = new Button_(10, Gdx.graphics.getHeight() - 260, "trainPony");
+        ponyButton.onClick(() -> trainPony());
+
+        /*
+
+            Castle upgrades Menu
+
+         */
+
+        // add right tower upgrade button
+        rightTowerButton = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 100, "buildRightTower");
+        rightTowerButton.onClick(() -> buildRightTower());
+        rightTower = new Texture(Gdx.files.internal("castle/towerBody.png"));
         }
 
     @Override
@@ -148,9 +192,15 @@ public class ClickerMainMenu extends Screen_ {
         minerButton.render(batch);
         mainMenuButton.render(batch);
         pickaxeButton.render(batch);
+        ponyButton.render(batch);
 
-        // update gold counter
+        if (!haveRightTower) {
+            rightTowerButton.render(batch);
+        }
+
+        // update gold counter and gps counter
         font.draw(batch, goldString, 10, Gdx.graphics.getHeight() - 10);
+        font.draw(batch, gpsString, 115, Gdx.graphics.getHeight() - 10);
 
         // add and update pickaxe counter and price
         font.draw(batch, pickaxeStringPrice, 115, Gdx.graphics.getHeight() - 45);
@@ -159,6 +209,14 @@ public class ClickerMainMenu extends Screen_ {
         // add and update miner counter and price
         font.draw(batch, minerStringPrice, 115, Gdx.graphics.getHeight() - 125);
         font.draw(batch, minerString, 115, Gdx.graphics.getHeight() - 155);
+
+        // add and update pony counter and price
+        font.draw(batch, ponyStringPrice, 115, Gdx.graphics.getHeight() - 205);
+        font.draw(batch, ponyString, 115, Gdx.graphics.getHeight() - 235);
+
+        if (haveRightTower) {
+            batch.draw(rightTower, x , 0);
+        }
 
         batch.end();
 
@@ -171,6 +229,11 @@ public class ClickerMainMenu extends Screen_ {
         minerButton.logic(mPos);
         mainMenuButton.logic(mPos);
         pickaxeButton.logic(mPos);
+        ponyButton.logic(mPos);
+
+        if (!haveRightTower) {
+            rightTowerButton.logic(mPos);
+        }
 
         // updates the gold every second
         deltaTimer += delta;
@@ -224,6 +287,7 @@ public class ClickerMainMenu extends Screen_ {
                 pickaxePrice += pickaxePrice * 0.6;
                 pickaxeStringPrice = "Price " + pickaxePrice;
                 gps += pickaxeCounter;
+                gpsString = "Gold per Second: " + gps;
             }
         } else {
             System.out.println("Not enough gold");
@@ -243,7 +307,37 @@ public class ClickerMainMenu extends Screen_ {
                 minerPrice += minerPrice * 0.5;
                 minerStringPrice = "Price: " + minerPrice;
                 gps += minerCounter * 2;
+                gpsString = "Gold per Second: " + gps;
             }
+
+        } else {
+            System.out.println("Not enough gold");
+        }
+    }
+
+    public void trainPony() {
+
+        if (goldCounter >= ponyPrice) {
+            ponyCounter ++;
+            ponyString = "Ponies: " + String.valueOf(ponyCounter);
+            goldCounter -= ponyPrice;
+            goldString = "Gold: " + String.valueOf(goldCounter);
+
+            if (ponyCounter > 0) {
+                ponyPrice += ponyPrice * 0.5;
+                ponyStringPrice = "Price " + ponyPrice;
+                gps += ponyCounter * 5;
+                gpsString = "Gold per second: " + gps;
+            }
+        } else {
+            System.out.println("Not enough gold");
+        }
+    }
+
+    public void buildRightTower() {
+
+        if (goldCounter >= 1) {
+            haveRightTower = true;
 
         } else {
             System.out.println("Not enough gold");
@@ -281,10 +375,17 @@ public class ClickerMainMenu extends Screen_ {
             Properties properties = new Properties();
             properties.setProperty("gold", String.valueOf(goldCounter));
             properties.setProperty("gps", String.valueOf(gps));
+
             properties.setProperty("pickaxePrice", String.valueOf(pickaxePrice));
             properties.setProperty("pickaxeCounter", String.valueOf(pickaxeCounter));
+
             properties.setProperty("minerPrice", String.valueOf(minerPrice));
             properties.setProperty("minerCounter", String.valueOf(minerCounter));
+
+            properties.setProperty("ponyPrice", String.valueOf(ponyPrice));
+            properties.setProperty("ponyCounter", String.valueOf(ponyCounter));
+
+            properties.setProperty("haveRightTower", String.valueOf(haveRightTower));
 
             File file = new File("save.properties");
             System.out.println(file.getAbsolutePath());
