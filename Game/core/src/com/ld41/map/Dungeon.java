@@ -47,8 +47,9 @@ public class Dungeon extends Screen_{
         generate();
         camera.position.x = generator.character.getX() - 16;
         camera.position.y = generator.character.getY() - 16;
-        //camera.zoom = 0.5f;
-        camera.zoom = 4f;
+        camera.zoom = 0.5f;
+        // Debug zoom:
+        //camera.zoom = 4f;
         debug = new Texture("map/debug.png");
         debug2 = new Texture("map/debug2.png");
 
@@ -158,6 +159,28 @@ public class Dungeon extends Screen_{
         }
 
         generator.character.render(batch);
+
+        for (Spider spider : generator.spiders) {
+
+            spider.render(batch);
+
+            for (Rectangle r : generator.collisions) {
+
+                Rectangle xR = new Rectangle(spider.x - 1, spider.y, 34, 32);
+
+                if (r.contains(xR) || xR.contains(r) || r.overlaps(xR) || xR.overlaps(r)) {
+
+                    spider.dir *= -1;
+                    // Hmmmmmm
+                    break;
+
+                }
+
+            }
+
+            spider.x += spider.dir;
+
+        }
 
         if (wPressed) {
 

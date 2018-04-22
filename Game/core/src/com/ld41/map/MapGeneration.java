@@ -14,6 +14,7 @@ public class MapGeneration {
     List<hCorridor> hCorridors;
     List<vCorridor> vCorridors;
     public List<Rectangle> collisions;
+    public List<Spider> spiders;
     public int empty = 0;
     public int wall = 1;
     public int chest = 2;
@@ -30,6 +31,7 @@ public class MapGeneration {
         hCorridors = new ArrayList<hCorridor>();
         vCorridors = new ArrayList<vCorridor>();
         collisions = new ArrayList<Rectangle>();
+        spiders = new ArrayList<Spider>();
 
     }
 
@@ -163,6 +165,26 @@ public class MapGeneration {
 
         }
 
+        int numMonsters = 0;
+
+        while (numMonsters < 16) {
+
+            int monsterX = r.nextInt(width);
+            int monsterY = r.nextInt(height);
+
+            if (map[monsterX][monsterY] == empty) {
+
+                if ((monsterX * 32 != character.getX() && monsterY * 32 != character.getY())) {
+
+                    spiders.add(new Spider(monsterX, monsterY));
+                    numMonsters++;
+
+                }
+
+            }
+
+        }
+
         boolean chestPlaced = false;
         int distFromPlayer;
         Vector2 playerPos = new Vector2(character.x, character.y);
@@ -177,7 +199,7 @@ public class MapGeneration {
                 Vector2 chestPos = new Vector2(chestPosX, chestPosY);
                 distFromPlayer = (int) chestPos.dst(playerPos);
 
-                if (distFromPlayer >= 1500) {
+                if (distFromPlayer >= 1200) {
 
                     map[chestPosX][chestPosY] = chest;
                     chestPlaced = true;
