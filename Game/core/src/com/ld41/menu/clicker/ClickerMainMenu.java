@@ -49,6 +49,9 @@ public class ClickerMainMenu extends Screen_ {
     int ponyCounter;
     String ponyStringPrice;
     String ponyString;
+    Boolean haveRightTower;
+    Button_ rightTowerButton;
+    Texture rightTower;
 
     public ClickerMainMenu(Game game) {
         super(game);
@@ -94,6 +97,8 @@ public class ClickerMainMenu extends Screen_ {
                 ponyStringPrice = "Price: " + ponyPrice;
                 ponyString = "Miners: " + ponyCounter;
 
+                // restoring towers
+                haveRightTower = Boolean.parseBoolean(properties.getProperty("haveRightTower"));
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -116,6 +121,7 @@ public class ClickerMainMenu extends Screen_ {
             ponyString = "Ponies: 0";
             ponyStringPrice = "Price: " + ponyPrice;
 
+            haveRightTower = false;
         }
 
         height = Gdx.graphics.getHeight();
@@ -127,7 +133,7 @@ public class ClickerMainMenu extends Screen_ {
         batch = new SpriteBatch();
 
         // add main castle texture
-        castle = new Texture(Gdx.files.internal("castle/unknown.png"));
+        castle = new Texture(Gdx.files.internal("castle/castleMain.png"));
 
         // add button that adds 1 gold to total
         clickerButton = new Button_((width / 2 - 48), height - 40, "clickGold");
@@ -143,7 +149,7 @@ public class ClickerMainMenu extends Screen_ {
 
 
         /*
-            upgrades menu
+            Gold upgrades menu
          */
 
         // add upgrade pickaxe button
@@ -157,6 +163,17 @@ public class ClickerMainMenu extends Screen_ {
         // add pit pony button
         ponyButton = new Button_(10, Gdx.graphics.getHeight() - 260, "trainPony");
         ponyButton.onClick(() -> trainPony());
+
+        /*
+
+            Castle upgrades Menu
+
+         */
+
+        // add right tower upgrade button
+        rightTowerButton = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 100, "buildRightTower");
+        rightTowerButton.onClick(() -> buildRightTower());
+        rightTower = new Texture(Gdx.files.internal("castle/towerBody.png"));
         }
 
     @Override
@@ -177,6 +194,10 @@ public class ClickerMainMenu extends Screen_ {
         pickaxeButton.render(batch);
         ponyButton.render(batch);
 
+        if (!haveRightTower) {
+            rightTowerButton.render(batch);
+        }
+
         // update gold counter and gps counter
         font.draw(batch, goldString, 10, Gdx.graphics.getHeight() - 10);
         font.draw(batch, gpsString, 115, Gdx.graphics.getHeight() - 10);
@@ -193,6 +214,10 @@ public class ClickerMainMenu extends Screen_ {
         font.draw(batch, ponyStringPrice, 115, Gdx.graphics.getHeight() - 205);
         font.draw(batch, ponyString, 115, Gdx.graphics.getHeight() - 235);
 
+        if (haveRightTower) {
+            batch.draw(rightTower, x , 0);
+        }
+
         batch.end();
 
         mPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -205,6 +230,10 @@ public class ClickerMainMenu extends Screen_ {
         mainMenuButton.logic(mPos);
         pickaxeButton.logic(mPos);
         ponyButton.logic(mPos);
+
+        if (!haveRightTower) {
+            rightTowerButton.logic(mPos);
+        }
 
         // updates the gold every second
         deltaTimer += delta;
@@ -305,6 +334,16 @@ public class ClickerMainMenu extends Screen_ {
         }
     }
 
+    public void buildRightTower() {
+
+        if (goldCounter >= 1) {
+            haveRightTower = true;
+
+        } else {
+            System.out.println("Not enough gold");
+        }
+    }
+
 
     public void sendToDungeon() {
         saveToFile();
@@ -345,6 +384,8 @@ public class ClickerMainMenu extends Screen_ {
 
             properties.setProperty("ponyPrice", String.valueOf(ponyPrice));
             properties.setProperty("ponyCounter", String.valueOf(ponyCounter));
+
+            properties.setProperty("haveRightTower", String.valueOf(haveRightTower));
 
             File file = new File("save.properties");
             System.out.println(file.getAbsolutePath());
