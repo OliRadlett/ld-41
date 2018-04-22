@@ -3,7 +3,9 @@ package com.ld41.map;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -22,6 +24,7 @@ public class MapGeneration {
     int roomWidth;
     int roomHeight;
     public DemoCharacter character;
+    public Rectangle chestRect;
 
 
     public MapGeneration() {
@@ -176,7 +179,7 @@ public class MapGeneration {
 
                 if ((monsterX * 32 != character.getX() && monsterY * 32 != character.getY())) {
 
-                    spiders.add(new Spider(monsterX, monsterY));
+                    spiders.add(new Spider(monsterX * 32, monsterY * 32));
                     numMonsters++;
 
                 }
@@ -199,9 +202,10 @@ public class MapGeneration {
                 Vector2 chestPos = new Vector2(chestPosX, chestPosY);
                 distFromPlayer = (int) chestPos.dst(playerPos);
 
-                if (distFromPlayer >= 1200) {
+                if (distFromPlayer >= 500) {
 
                     map[chestPosX][chestPosY] = chest;
+                    chestRect = new Rectangle(chestPosX * 32, chestPosY * 32, 32, 32);
                     chestPlaced = true;
 
                 }

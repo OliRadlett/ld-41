@@ -9,10 +9,8 @@ public class Spider {
     int x;
     int y;
     int dir;
-    int left = 2;
-    int right = 3;
-    int up = 0;
-    int down = 1;
+    int left = 1;
+    int right = -1;
     Texture texture;
     Texture upTex[];
     Texture downTex[];
@@ -70,7 +68,7 @@ public class Spider {
 
         delta += Gdx.graphics.getDeltaTime();
 
-        batch.draw(this.texture, this.x * 32, this.y * 32);
+        batch.draw(this.texture, this.x, this.y);
 
         if (delta >= 0.4f) {
 
@@ -86,19 +84,12 @@ public class Spider {
 
             switch (dir) {
 
-                case 0:
-                    texture = upTex[frame];
-                    break;
 
-                case 1:
-                    texture = downTex[frame];
-                    break;
-
-                case 2:
+                case -1:
                     texture = leftTex[frame];
                     break;
 
-                case 3:
+                case 1:
                     texture = rightTex[frame];
                     break;
 

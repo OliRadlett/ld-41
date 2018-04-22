@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.ld41.core.Button_;
 import com.ld41.core.Screen_;
 import com.ld41.main.Game;
+import com.ld41.menu.Treasure;
 
 public class Dungeon extends Screen_{
 
@@ -20,7 +21,7 @@ public class Dungeon extends Screen_{
     Vector3 mPos;
     MapGeneration generator;
     int[][] map;
-    Texture wall, floor, chest, debug, debug2, almostlighting;
+    Texture wall, floor1, floor2, chest, debug, debug2, almostlighting;
 
     boolean wPressed, aPressed, dPressed, sPressed;
 
@@ -39,7 +40,8 @@ public class Dungeon extends Screen_{
         generateButton = new Button_(64, 64, "generate");
         generateButton.onClick(() -> generate());
         wall = new Texture("map/wall.png");
-        floor = new Texture("map/floor.png");
+        floor1 = new Texture("map/floor1.png");
+        floor2 = new Texture("map/floor2.png");
         chest = new Texture("map/chest.png");
         almostlighting = new Texture("map/almostlighting.png");
         generator = new MapGeneration();
@@ -140,7 +142,8 @@ public class Dungeon extends Screen_{
 
                     case 0:
 
-                        batch.draw(floor, i * floor.getWidth(), j * floor.getHeight());
+                        batch.draw(floor1, i * floor1.getWidth(), j * floor1.getHeight());
+
                         break;
 
                     case 1:
@@ -150,6 +153,7 @@ public class Dungeon extends Screen_{
 
                     case 2:
 
+                        batch.draw(floor1, i * floor1.getWidth(), j * floor1.getHeight());
                         batch.draw(chest, i * chest.getWidth(), j * chest.getHeight());
 
                 }
@@ -159,6 +163,12 @@ public class Dungeon extends Screen_{
         }
 
         generator.character.render(batch);
+
+        if (generator.character.r.contains(generator.chestRect) || generator.chestRect.contains(generator.character.r) || generator.character.r.overlaps(generator.chestRect) || generator.chestRect.overlaps(generator.character.r)) {
+
+            this.getGame().setScreen(new Treasure(this.getGame()));
+
+        }
 
         for (Spider spider : generator.spiders) {
 
