@@ -1,6 +1,7 @@
 package com.ld41.map;
 
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -163,27 +164,29 @@ public class MapGeneration {
         }
 
         boolean chestPlaced = false;
+        int distFromPlayer;
+        Vector2 playerPos = new Vector2(character.x, character.y);
 
         while (!chestPlaced) {
 
-            int chestPosX = r.nextInt(width) + 1;
-            int chestPosY = r.nextInt(height) + 1;
+            int chestPosX = r.nextInt(width);
+            int chestPosY = r.nextInt(height);
 
             if (map[chestPosX][chestPosY] == empty) {
 
-                map[chestPosX][chestPosX] = chest;
-                chestPlaced = true;
+                Vector2 chestPos = new Vector2(chestPosX, chestPosY);
+                distFromPlayer = (int) chestPos.dst(playerPos);
 
-                System.out.println("Empty");
+                if (distFromPlayer >= 1500) {
 
-            } else {
+                    map[chestPosX][chestPosY] = chest;
+                    chestPlaced = true;
 
-                System.out.println("Wall");
+                }
 
             }
 
         }
-
 
         return map;
 
