@@ -147,7 +147,7 @@ public class ClickerMainMenu extends Screen_ {
         castle = new Texture(Gdx.files.internal("castle/castleMain.png"));
 
         // Add background texture
-        bg = new Texture("castle/background.png");
+        bg = new Texture("castle/Background2.png");
 
         // add button that adds 1 gold to total
         clickerButton = new Button_((width / 2 - 48), Gdx.graphics.getHeight() - 80, "clickGold");
