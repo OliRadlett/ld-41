@@ -55,6 +55,9 @@ public class ClickerMainMenu extends Screen_ {
     Boolean haveLeftTower;
     Button_ leftTowerButton;
     Texture leftTowerBody;
+    boolean haveRightTurret;
+    Button_ rightTurretButton;
+    Texture rightTurret;
 
     public ClickerMainMenu(Game game) {
         super(game);
@@ -103,6 +106,8 @@ public class ClickerMainMenu extends Screen_ {
                 // restoring towers
                 haveRightTower = Boolean.parseBoolean(properties.getProperty("haveRightTower"));
                 haveLeftTower = Boolean.parseBoolean(properties.getProperty("haveLeftTower"));
+                haveRightTurret = Boolean.parseBoolean(properties.getProperty("haveRightTurret"));
+
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -127,6 +132,7 @@ public class ClickerMainMenu extends Screen_ {
 
             haveRightTower = false;
             haveLeftTower = false;
+            haveRightTurret = false;
         }
 
         height = Gdx.graphics.getHeight();
@@ -177,17 +183,22 @@ public class ClickerMainMenu extends Screen_ {
 
          */
 
-        // add right tower upgrade button
         rightTowerBody = new Texture(Gdx.files.internal("castle/rightTowerBody.png"));
         leftTowerBody = new Texture(Gdx.files.internal("castle/leftTowerBody.png"));
+        rightTurret = new Texture(Gdx.files.internal("castle/rightTurret.png"));
 
+        // add right tower upgrade button
         rightTowerButton = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 100, "buildRightTower");
         rightTowerButton.onClick(() -> buildRightTower());
 
         // add left tower upgrade button
         leftTowerButton = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 180, "buildLeftTower");
         leftTowerButton.onClick(() -> buildLeftTower());
-        }
+
+        // add right tower
+        rightTurretButton = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 260, "buildRightTurret");
+        rightTurretButton.onClick(() -> buildRightTurret());
+    }
 
     @Override
     public void render(float delta) {
@@ -213,6 +224,9 @@ public class ClickerMainMenu extends Screen_ {
         if (!haveLeftTower) {
             leftTowerButton.render(batch);
         }
+        if (!haveRightTurret) {
+            rightTurretButton.render(batch);
+        }
 
         // update gold counter and gps counter
         font.draw(batch, goldString, 10, Gdx.graphics.getHeight() - 10);
@@ -236,6 +250,9 @@ public class ClickerMainMenu extends Screen_ {
         if (haveLeftTower) {
             batch.draw(leftTowerBody, x, 0);
         }
+        if (haveRightTurret) {
+            batch.draw(rightTurret, x, 0);
+        }
 
         batch.end();
 
@@ -255,6 +272,9 @@ public class ClickerMainMenu extends Screen_ {
         }
         if (!haveLeftTower) {
             leftTowerButton.logic(mPos);
+        }
+        if (!haveRightTurret) {
+            rightTurretButton.logic(mPos);
         }
 
         // updates the gold every second
@@ -374,6 +394,14 @@ public class ClickerMainMenu extends Screen_ {
         }
     }
 
+    public void buildRightTurret() {
+        if (goldCounter >= 1) {
+            haveRightTurret = true;
+        } else {
+            System.out.println("Not enough gold");
+        }
+    }
+
 
     public void sendToDungeon() {
         saveToFile();
@@ -394,7 +422,6 @@ public class ClickerMainMenu extends Screen_ {
 
     public void updateGold() {
 
-        System.out.println(String.valueOf(gps));
         goldCounter = goldCounter + gps;
         goldString = "Gold: " + String.valueOf(goldCounter);
 
@@ -416,6 +443,8 @@ public class ClickerMainMenu extends Screen_ {
             properties.setProperty("ponyCounter", String.valueOf(ponyCounter));
 
             properties.setProperty("haveRightTower", String.valueOf(haveRightTower));
+            properties.setProperty("haveLeftTower", String.valueOf(haveLeftTower));
+            properties.setProperty("haveRightTurret", String.valueOf(haveRightTurret));
 
             File file = new File("save.properties");
             System.out.println(file.getAbsolutePath());
