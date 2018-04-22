@@ -181,7 +181,6 @@ public class Dungeon extends Screen_{
                 if (r.contains(xR) || xR.contains(r) || r.overlaps(xR) || xR.overlaps(r)) {
 
                     spider.dir *= -1;
-                    // Hmmmmmm
                     break;
 
                 }

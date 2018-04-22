@@ -81,6 +81,8 @@ public class Treasure extends Screen_ {
 
         }
 
+        //TODO choose random unowned blueprint and write it to file
+
     }
 
     @Override
@@ -94,6 +96,9 @@ public class Treasure extends Screen_ {
         batch.draw(bg, 0, 0);
 
         toClickerMenuButton.render(batch);
+
+        //TODO render blueprint in some way
+        //TODO make blueprint do something?, idk whats real anymore
 
         batch.end();
 
