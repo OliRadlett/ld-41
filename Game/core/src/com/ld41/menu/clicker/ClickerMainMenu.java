@@ -49,15 +49,18 @@ public class ClickerMainMenu extends Screen_ {
     int ponyCounter;
     String ponyStringPrice;
     String ponyString;
-    Boolean haveRightTower;
+    boolean haveRightTower;
     Button_ rightTowerButton;
     Texture rightTowerBody;
-    Boolean haveLeftTower;
+    boolean haveLeftTower;
     Button_ leftTowerButton;
     Texture leftTowerBody;
     boolean haveRightTurret;
     Button_ rightTurretButton;
     Texture rightTurret;
+    boolean haveLeftTurret;
+    Button_ leftTurretButton;
+    Texture leftTurret;
 
     public ClickerMainMenu(Game game) {
         super(game);
@@ -107,7 +110,7 @@ public class ClickerMainMenu extends Screen_ {
                 haveRightTower = Boolean.parseBoolean(properties.getProperty("haveRightTower"));
                 haveLeftTower = Boolean.parseBoolean(properties.getProperty("haveLeftTower"));
                 haveRightTurret = Boolean.parseBoolean(properties.getProperty("haveRightTurret"));
-
+                haveLeftTurret = Boolean.parseBoolean(properties.getProperty("haveLeftTurret"));
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -133,6 +136,7 @@ public class ClickerMainMenu extends Screen_ {
             haveRightTower = false;
             haveLeftTower = false;
             haveRightTurret = false;
+            haveLeftTurret = false;
         }
 
         height = Gdx.graphics.getHeight();
@@ -189,6 +193,7 @@ public class ClickerMainMenu extends Screen_ {
         rightTowerBody = new Texture(Gdx.files.internal("castle/rightTowerBody.png"));
         leftTowerBody = new Texture(Gdx.files.internal("castle/leftTowerBody.png"));
         rightTurret = new Texture(Gdx.files.internal("castle/rightTurret.png"));
+        leftTurret = new Texture(Gdx.files.internal("castle/leftTurret.png"));
 
         // add right tower upgrade button
         rightTowerButton = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 100, "buildRightTower");
@@ -198,9 +203,13 @@ public class ClickerMainMenu extends Screen_ {
         leftTowerButton = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 180, "buildLeftTower");
         leftTowerButton.onClick(() -> buildLeftTower());
 
-        // add right tower
+        // add right turret
         rightTurretButton = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 260, "buildRightTurret");
         rightTurretButton.onClick(() -> buildRightTurret());
+
+        // add left turret
+        leftTurretButton = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 340, "buildLeftTurret");
+        leftTurretButton.onClick(() -> buildLeftTurret());
     }
 
     @Override
@@ -232,6 +241,9 @@ public class ClickerMainMenu extends Screen_ {
         if (!haveRightTurret) {
             rightTurretButton.render(batch);
         }
+        if (!haveLeftTurret) {
+            leftTurretButton.render(batch);
+        }
 
         // update gold counter and gps counter
         font.draw(batch, goldString, 10, Gdx.graphics.getHeight() - 10);
@@ -258,6 +270,9 @@ public class ClickerMainMenu extends Screen_ {
         if (haveRightTurret) {
             batch.draw(rightTurret, x, 0);
         }
+        if (haveLeftTurret) {
+            batch.draw(leftTurret, x, 0);
+        }
 
         batch.end();
 
@@ -280,6 +295,9 @@ public class ClickerMainMenu extends Screen_ {
         }
         if (!haveRightTurret) {
             rightTurretButton.logic(mPos);
+        }
+        if (!haveLeftTurret) {
+            leftTurretButton.logic(mPos);
         }
 
         // updates the gold every second
@@ -372,7 +390,7 @@ public class ClickerMainMenu extends Screen_ {
 
             if (ponyCounter > 0) {
                 ponyPrice += ponyPrice * 0.5;
-                ponyStringPrice = "Price " + ponyPrice;
+                ponyStringPrice = "Price: " + ponyPrice;
                 gps += ponyCounter * 5;
                 gpsString = "Gold per second: " + gps;
             }
@@ -402,6 +420,14 @@ public class ClickerMainMenu extends Screen_ {
     public void buildRightTurret() {
         if (goldCounter >= 1) {
             haveRightTurret = true;
+        } else {
+            System.out.println("Not enough gold");
+        }
+    }
+
+    public void buildLeftTurret() {
+        if (goldCounter >= 1) {
+            haveLeftTurret = true;
         } else {
             System.out.println("Not enough gold");
         }
