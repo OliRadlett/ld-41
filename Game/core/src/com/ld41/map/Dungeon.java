@@ -19,7 +19,7 @@ public class Dungeon extends Screen_{
     Vector3 mPos;
     MapGeneration generator;
     int[][] map;
-    Texture wall;
+    Texture wall, debug;
 
     boolean wPressed, aPressed, dPressed, sPressed;
 
@@ -43,6 +43,7 @@ public class Dungeon extends Screen_{
         generate();
         camera.position.x = generator.character.getX() - 16;
         camera.position.y = generator.character.getY() - 16;
+        debug = new Texture("map/debug.png");
 
         Gdx.input.setInputProcessor(new InputAdapter() {
 
@@ -136,26 +137,6 @@ public class Dungeon extends Screen_{
         camera.position.x = (generator.character.getX()) - 16;
         camera.position.y = (generator.character.getY()) - 16;
 
-        if (aPressed) {
-
-            /*if (xOnTile(generator.character.getX())) {
-
-                System.out.println("TEST");
-
-                int tileOnLeft = map[(generator.character.getX() / 32) - 1][(generator.character.getY() / 32)];
-
-                if (tileOnLeft == 0) {
-
-                    generator.character.setX(generator.character.getX() - 1);
-
-                }
-
-            } */
-
-            //if ()
-
-        }
-
         batch.setProjectionMatrix(camera.combined);
         camera.update();
 
@@ -179,6 +160,50 @@ public class Dungeon extends Screen_{
         }
 
         generator.character.render(batch);
+
+        if (aPressed) {
+
+            int tileOnLeft = map[((generator.character.getX() - 2) / 32)][generator.character.getY() / 32];
+            if (tileOnLeft == 0) {
+
+                generator.character.setX(generator.character.getX() - 2);
+
+            }
+
+        }
+
+        if (dPressed) {
+
+            int tileOnRight = map[((generator.character.getX()) / 32) + 1][generator.character.getY() / 32];
+            if (tileOnRight == 0) {
+
+                generator.character.setX(generator.character.getX() + 2);
+
+            }
+
+        }
+
+        if (wPressed) {
+
+            int tileAbove = map[(generator.character.getX() / 32)][((generator.character.getY()) / 32) + 1];
+            if (tileAbove == 0) {
+
+                generator.character.setY(generator.character.getY() + 2);
+
+            }
+
+        }
+
+        if (sPressed) {
+
+            int tileBellow = map[(generator.character.getX() / 32)][((generator.character.getY() - 2) / 32)];
+            if (tileBellow == 0) {
+
+                generator.character.setY(generator.character.getY() - 2);
+
+            }
+
+        }
 
         batch.end();
 
