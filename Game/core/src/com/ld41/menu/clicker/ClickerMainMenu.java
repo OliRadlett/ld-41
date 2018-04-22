@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.ld41.core.Button_;
 import com.ld41.core.Screen_;
 import com.ld41.main.Game;
+import com.ld41.map.Dungeon;
 import com.ld41.menu.Menu;
 
 
@@ -69,7 +70,7 @@ public class ClickerMainMenu extends Screen_ {
         batch = new SpriteBatch();
 
         // add main castle texture
-        castle = new Texture(Gdx.files.internal("castle/starterCastle.png"));
+        castle = new Texture(Gdx.files.internal("alex/Castle.png"));
 
         // add button that adds 1 gold to total
         clickerButton = new Button_((width / 2 - 48), height - 40, "clickGold");
@@ -218,13 +219,17 @@ public class ClickerMainMenu extends Screen_ {
 
 
     public void sendToDungeon() {
-        // TODO: I dunno, however Oli wants to do this bit
-        System.out.println("PLACEHOLDER");
+
+        getGame().setScreen(new Dungeon(getGame()));
+        this.dispose();
+
     }
 
     public void sendToMainMenu() {
+
         getGame().setScreen(new Menu(getGame()));
         this.dispose();
+
     }
 
     public void updateGold() {
@@ -232,6 +237,7 @@ public class ClickerMainMenu extends Screen_ {
         System.out.println(String.valueOf(gps));
         goldCounter = goldCounter + gps;
         goldString = "Gold: " + String.valueOf(goldCounter);
+
     }
 
 }

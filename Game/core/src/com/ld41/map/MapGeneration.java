@@ -13,6 +13,9 @@ public class MapGeneration {
     int empty = 0;
     int wall = 1;
     int numRooms;
+    int roomWidth;
+    int roomHeight;
+    public DemoCharacter character;
 
     public MapGeneration() {
 
@@ -26,6 +29,8 @@ public class MapGeneration {
     public int[][] GenerateMap(int width, int height, int numRooms) {
 
         this.numRooms = numRooms;
+        this.roomWidth = width;
+        this.roomHeight = height;
 
         hCorridors.clear();
         vCorridors.clear();
@@ -47,6 +52,12 @@ public class MapGeneration {
         generateRooms();
 
         for (Room room : rooms) {
+
+            if (rooms.indexOf(room) == 0) {
+
+                character = new DemoCharacter(room.centreX * 32, room.centreY * 32);
+
+            }
 
             for (int i = 0; i < width; i++) {
 
@@ -75,6 +86,8 @@ public class MapGeneration {
                         if (x == i && corridor.y == j) {
 
                             map[i][j] = empty;
+                            map[i][j + 1] = empty;
+                            map[i][j - 1] = empty;
 
                         }
 
@@ -97,6 +110,8 @@ public class MapGeneration {
                         if (corridor.x == i && y == j) {
 
                             map[i][j] = empty;
+                            map[i + 1][j] = empty;
+                            map[i - 1][j] = empty;
 
                         }
 
@@ -108,6 +123,24 @@ public class MapGeneration {
 
         }
 
+
+        // Edges
+        //top and bottom
+        for (int i = 0; i < width; i++) {
+
+            map[i][0] = wall;
+            map[i][height - 1] = wall;
+
+        }
+
+        //left and right
+        for (int j = 0; j < height; j++) {
+
+            map[0][j] = wall;
+            map[width - 1][j] = wall;
+
+        }
+
         return map;
 
     }
@@ -116,10 +149,10 @@ public class MapGeneration {
 
         for (int i = 0; i < numRooms; i++) {
 
-            int width = 10 + r.nextInt(15);
-            int height = 10 + r.nextInt(15);
-            int x = r.nextInt(100 - width - 1) + 1;
-            int y = r.nextInt(100 - height - 1) + 1;
+            int width = 5 + r.nextInt(10);
+            int height = 5 + r.nextInt(10);
+            int x = r.nextInt(roomWidth - width - 1) + 1;
+            int y = r.nextInt(roomHeight- height - 1) + 1;
 
             Room room = new Room(x, y, width, height);
 

@@ -20,8 +20,6 @@ public class Dungeon extends Screen_{
     MapGeneration generator;
     int[][] map;
     Texture wall;
-    Texture debugRed;
-    Texture debugGreen;
 
     boolean wPressed, aPressed, dPressed, sPressed;
 
@@ -35,18 +33,16 @@ public class Dungeon extends Screen_{
     public void show() {
 
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.position.x = Gdx.graphics.getWidth() / 2;
-        camera.position.y = Gdx.graphics.getHeight() / 2;
         batch = new SpriteBatch();
         GUIbatch = new SpriteBatch();
         generateButton = new Button_(64, 64, "generate");
         generateButton.onClick(() -> generate());
         wall = new Texture("map/wall.png");
-        debugRed = new Texture("map/debugRed.png");
-        debugGreen = new Texture("map/debugGreen.png");
         generator = new MapGeneration();
         map = new int[100][100];
         generate();
+        camera.position.x = generator.character.getX() - 16;
+        camera.position.y = generator.character.getY() - 16;
 
         Gdx.input.setInputProcessor(new InputAdapter() {
 
@@ -137,27 +133,26 @@ public class Dungeon extends Screen_{
     @Override
     public void render(float delta) {
 
-        if (wPressed) {
-
-            camera.position.y += 8;
-
-        }
-
-        if (sPressed) {
-
-            camera.position.y -= 8;
-
-        }
+        camera.position.x = (generator.character.getX()) - 16;
+        camera.position.y = (generator.character.getY()) - 16;
 
         if (aPressed) {
 
-            camera.position.x -= 8;
+            /*if (xOnTile(generator.character.getX())) {
 
-        }
+                System.out.println("TEST");
 
-        if (dPressed) {
+                int tileOnLeft = map[(generator.character.getX() / 32) - 1][(generator.character.getY() / 32)];
 
-            camera.position.x += 8;
+                if (tileOnLeft == 0) {
+
+                    generator.character.setX(generator.character.getX() - 1);
+
+                }
+
+            } */
+
+            //if ()
 
         }
 
@@ -166,25 +161,15 @@ public class Dungeon extends Screen_{
 
         batch.begin();
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 75; i++) {
 
-            for (int j = 0; j < 100; j++) {
+            for (int j = 0; j < 75; j++) {
 
                 switch (map[i][j]) {
 
                     case 1:
 
-                        batch.draw(wall, i * 16, j * 16);
-                        break;
-
-                    case 2:
-
-                        batch.draw(debugRed, i * 16, j * 16);
-                        break;
-
-                    case 3:
-
-                        batch.draw(debugGreen, i * 16, j * 16);
+                        batch.draw(wall, i * wall.getWidth(), j * wall.getHeight());
                         break;
 
                 }
@@ -193,7 +178,7 @@ public class Dungeon extends Screen_{
 
         }
 
-
+        generator.character.render(batch);
 
         batch.end();
 
@@ -243,7 +228,35 @@ public class Dungeon extends Screen_{
     public void generate() {
 
         System.out.println("Generating new map");
-        map = generator.GenerateMap(100, 100, 10);
+        map = generator.GenerateMap(75, 75, 10);
+
+    }
+
+    public boolean xOnTile(int x) {
+
+        if (x % 32 == 0) {
+
+            return true;
+
+        } else {
+
+            return  false;
+
+        }
+
+    }
+
+    public boolean yOnTile(int y) {
+
+        if (y % 32 == 0) {
+
+            return true;
+
+        } else {
+
+            return  false;
+
+        }
 
     }
 
