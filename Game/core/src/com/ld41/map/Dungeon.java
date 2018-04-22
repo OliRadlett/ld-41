@@ -193,6 +193,8 @@ public class Dungeon extends Screen_{
 
         if (wPressed) {
 
+            generator.character.dir = 2;
+
             boolean canMove = true;
 
             for (Rectangle r : generator.collisions) {
@@ -217,6 +219,8 @@ public class Dungeon extends Screen_{
         }
 
         if (aPressed) {
+
+            generator.character.dir = 0;
 
             boolean canMove = true;
 
@@ -243,6 +247,8 @@ public class Dungeon extends Screen_{
 
         if (sPressed) {
 
+            generator.character.dir = 3;
+
             boolean canMove = true;
 
             for (Rectangle r : generator.collisions) {
@@ -268,6 +274,8 @@ public class Dungeon extends Screen_{
 
 
         if (dPressed) {
+
+            generator.character.dir = 1;
 
             boolean canMove = true;
 
