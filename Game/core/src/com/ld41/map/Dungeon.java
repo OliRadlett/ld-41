@@ -20,7 +20,7 @@ public class Dungeon extends Screen_{
     Vector3 mPos;
     MapGeneration generator;
     int[][] map;
-    Texture wall, floor, debug, debug2, almostlighting;
+    Texture wall, floor, chest, debug, debug2, almostlighting;
 
     boolean wPressed, aPressed, dPressed, sPressed;
 
@@ -40,13 +40,15 @@ public class Dungeon extends Screen_{
         generateButton.onClick(() -> generate());
         wall = new Texture("map/wall.png");
         floor = new Texture("map/floor.png");
+        chest = new Texture("map/chest.png");
         almostlighting = new Texture("map/almostlighting.png");
         generator = new MapGeneration();
         map = new int[100][100];
         generate();
         camera.position.x = generator.character.getX() - 16;
         camera.position.y = generator.character.getY() - 16;
-        camera.zoom = 0.5f;
+        //camera.zoom = 0.5f;
+        camera.zoom = 4f;
         debug = new Texture("map/debug.png");
         debug2 = new Texture("map/debug2.png");
 
@@ -144,6 +146,10 @@ public class Dungeon extends Screen_{
 
                         batch.draw(wall, i * wall.getWidth(), j * wall.getHeight());
                         break;
+
+                    case 2:
+
+                        batch.draw(chest, i * chest.getWidth(), j * chest.getHeight());
 
                 }
 
@@ -258,12 +264,6 @@ public class Dungeon extends Screen_{
 
         mPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(mPos);
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-
-            generate();
-
-        }
 
         GUIbatch.begin();
         GUIbatch.draw(almostlighting, 0, 0);
