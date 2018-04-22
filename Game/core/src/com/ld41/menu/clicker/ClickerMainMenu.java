@@ -13,6 +13,9 @@ import com.ld41.main.Game;
 import com.ld41.map.Dungeon;
 import com.ld41.menu.Menu;
 
+import java.io.*;
+import java.util.Properties;
+
 
 public class ClickerMainMenu extends Screen_ {
 
@@ -49,17 +52,47 @@ public class ClickerMainMenu extends Screen_ {
 
     @Override
     public void show() {
-        goldCounter = 0;
-        goldString = "Gold: 0";
-        minerString = "Miners: 0";
-        minerPrice = 50;
-        minerStringPrice = "Price: " + minerPrice;
-
-        pickaxePrice = 25;
-        pickaxeString = "Pickaxe Upgrades: 0";
-        pickaxeStringPrice = "Price: " + pickaxePrice;
 
         font = new BitmapFont();
+
+        // checks to see if there's a save file
+        if (new File("save.properties").isFile()) {
+
+            try {
+                File file = new File("save.properties");
+                FileInputStream fileInput = new FileInputStream(file);
+                Properties properties = new Properties();
+                properties.load(fileInput);
+                fileInput.close();
+
+                goldCounter = Integer.parseInt(properties.getProperty("gold"));
+                gps = Integer.parseInt(properties.getProperty("gps"));
+                pickaxePrice = Integer.parseInt(properties.getProperty("pickaxePrice"));
+                pickaxeCounter = Integer.parseInt(properties.getProperty("pickaxeCounter"));
+                minerCounter = Integer.parseInt(properties.getProperty("minerCounter"));
+                minerPrice = Integer.parseInt(properties.getProperty("minerPrice"));
+
+                goldString = "Gold: " + goldCounter;
+                pickaxeStringPrice = "Price: " + pickaxePrice;
+                pickaxeString = "Pickaxes Upgrades: " + pickaxeCounter;
+                minerStringPrice = "Price: " + minerPrice;
+                minerString = "Miners: " + minerCounter;
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            goldCounter = 0;
+            goldString = "Gold: 0";
+            minerString = "Miners: 0";
+            minerPrice = 50;
+            minerStringPrice = "Price: " + minerPrice;
+
+            pickaxePrice = 25;
+            pickaxeString = "Pickaxe Upgrades: 0";
+            pickaxeStringPrice = "Price: " + pickaxePrice;
+
+        }
 
         height = Gdx.graphics.getHeight();
         width = Gdx.graphics.getWidth();
@@ -70,7 +103,7 @@ public class ClickerMainMenu extends Screen_ {
         batch = new SpriteBatch();
 
         // add main castle texture
-        castle = new Texture(Gdx.files.internal("alex/Castle.png"));
+        castle = new Texture(Gdx.files.internal("castle/starterCastle.png"));
 
         // add button that adds 1 gold to total
         clickerButton = new Button_((width / 2 - 48), height - 40, "clickGold");
@@ -219,6 +252,7 @@ public class ClickerMainMenu extends Screen_ {
 
 
     public void sendToDungeon() {
+        saveToFile();
 
         getGame().setScreen(new Dungeon(getGame()));
         this.dispose();
@@ -226,6 +260,8 @@ public class ClickerMainMenu extends Screen_ {
     }
 
     public void sendToMainMenu() {
+
+        saveToFile();
 
         getGame().setScreen(new Menu(getGame()));
         this.dispose();
@@ -238,6 +274,26 @@ public class ClickerMainMenu extends Screen_ {
         goldCounter = goldCounter + gps;
         goldString = "Gold: " + String.valueOf(goldCounter);
 
+    }
+
+    public void saveToFile() {
+        try {
+            Properties properties = new Properties();
+            properties.setProperty("gold", String.valueOf(goldCounter));
+            properties.setProperty("gps", String.valueOf(gps));
+            properties.setProperty("pickaxePrice", String.valueOf(pickaxePrice));
+            properties.setProperty("pickaxeCounter", String.valueOf(pickaxeCounter));
+            properties.setProperty("minerPrice", String.valueOf(minerPrice));
+            properties.setProperty("minerCounter", String.valueOf(minerCounter));
+
+            File file = new File("save.properties");
+            System.out.println(file.getAbsolutePath());
+            FileOutputStream fileOut = new FileOutputStream(file);
+            properties.store(fileOut,"Ludum Dare 41 Save" );
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
