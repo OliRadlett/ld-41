@@ -43,10 +43,10 @@ public class Menu extends Screen_ {
 
         // button to exit game
         exitButton = new Button_((Gdx.graphics.getWidth() / 2) - 135, 64, "exit");
-        exitButton.onClick(() -> Exit());
+        exitButton.onClick(this::Exit);
         // button to switch to main menu
         toClickerMenuButton = new Button_((Gdx.graphics.getWidth() / 2 - 135), 275, "toClickerMainMenu" );
-        toClickerMenuButton.onClick(() -> switchScreenToMainMenu());
+        toClickerMenuButton.onClick(this::switchScreenToMainMenu);
 
         clouds = new ArrayList<Cloud>();
 

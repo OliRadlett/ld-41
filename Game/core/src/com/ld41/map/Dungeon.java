@@ -39,7 +39,7 @@ public class Dungeon extends Screen_{
         batch = new SpriteBatch();
         GUIbatch = new SpriteBatch();
         generateButton = new Button_(64, 64, "generate");
-        generateButton.onClick(() -> generate());
+        generateButton.onClick(this::generate);
         wall = new Texture("map/wall.png");
         floor1 = new Texture("map/floor1.png");
         floor2 = new Texture("map/floor2.png");
