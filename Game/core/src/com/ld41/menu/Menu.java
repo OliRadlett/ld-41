@@ -10,6 +10,10 @@ import com.ld41.core.Screen_;
 import com.ld41.main.Game;
 import com.ld41.menu.clicker.ClickerMainMenu;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 public class Menu extends Screen_ {
 
     SpriteBatch batch;
@@ -17,7 +21,12 @@ public class Menu extends Screen_ {
     OrthographicCamera camera;
     Vector3 mPos;
     Button_ toClickerMenuButton;
-    Texture bg;
+    Texture[] bg;
+    List<Cloud> clouds;
+    Random r;
+
+    int frame;
+    float anim;
 
     public Menu(Game game) {
         super(game);
@@ -30,6 +39,7 @@ public class Menu extends Screen_ {
         camera.position.x = Gdx.graphics.getWidth() / 2;
         camera.position.y = Gdx.graphics.getHeight() / 2;
         batch = new SpriteBatch();
+        r = new Random();
 
         // button to exit game
         exitButton = new Button_((Gdx.graphics.getWidth() / 2) - 135, 64, "exit");
@@ -38,19 +48,60 @@ public class Menu extends Screen_ {
         toClickerMenuButton = new Button_((Gdx.graphics.getWidth() / 2 - 135), 275, "toClickerMainMenu" );
         toClickerMenuButton.onClick(() -> switchScreenToMainMenu());
 
-        bg = new Texture("castle/background.png");
+        clouds = new ArrayList<Cloud>();
+
+        bg = new Texture[4];
+
+        for (int i = 0; i < 4; i++) {
+
+            bg[i] = new Texture("castle/menu" + i + ".png");
+
+        }
+
+        for (int i = 1; i < 4; i++) {
+
+           clouds.add(new Cloud(1280 / i, r.nextInt(125) + 650));
+
+        }
+
+        frame = 0;
+        anim = 0;
 
     }
 
     @Override
     public void render(float delta) {
 
+        anim += delta;
+
+        if (anim >= 0.7f) {
+
+            if (frame == 3) {
+
+                frame = 0;
+
+            } else {
+
+                frame ++;
+
+            }
+
+            anim = 0;
+
+        }
+
         batch.setProjectionMatrix(camera.combined);
         camera.update();
 
         batch.begin();
 
-        batch.draw(bg, 0, 0);
+        batch.draw(bg[frame], 0, 0);
+
+        for (Cloud cloud : clouds) {
+
+            cloud.render(batch);
+
+        }
 
         exitButton.render(batch);
         toClickerMenuButton.render(batch);
