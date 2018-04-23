@@ -20,7 +20,6 @@ import java.util.Properties;
 public class ClickerMainMenu extends Screen_ {
 
     private Texture castle, bg;
-    private Stage stage;
     private OrthographicCamera camera;
     private SpriteBatch batch;
     private Button_ clickerButton;
@@ -193,9 +192,6 @@ public class ClickerMainMenu extends Screen_ {
 
         // Add background texture
         bg = new Texture("castle/Background2.png");
-
-        // Add
-        alert = new Texture(Gdx.files.internal("moneyAlert.png"));
 
         // add button that adds 1 gold to total
         clickerButton = new Button_((width / 2 - 48), Gdx.graphics.getHeight() - 80, "clickGold");
@@ -525,8 +521,6 @@ public class ClickerMainMenu extends Screen_ {
                 gps += pickaxeCounter;
                 gpsString = "Gold per Second: " + gps;
             }
-        } else {
-            moneyAlert();
         }
     }
 
@@ -546,8 +540,6 @@ public class ClickerMainMenu extends Screen_ {
                 gpsString = "Gold per Second: " + gps;
             }
 
-        } else {
-            moneyAlert();
         }
     }
 
@@ -565,8 +557,6 @@ public class ClickerMainMenu extends Screen_ {
                 gps += ponyCounter * 5;
                 gpsString = "Gold per second: " + gps;
             }
-        } else {
-            moneyAlert();
         }
     }
 
@@ -584,8 +574,6 @@ public class ClickerMainMenu extends Screen_ {
                 gps += dynamiteCounter * 10;
                 gpsString = "Gold per second: " + gps;
             }
-        } else {
-            moneyAlert();
         }
     }
 
@@ -594,40 +582,30 @@ public class ClickerMainMenu extends Screen_ {
         if (goldCounter >= 1 && rightTowerBlueprint) {
             haveRightTower = true;
 
-        } else {
-            moneyAlert();
         }
     }
 
     private void buildLeftTower() {
         if (goldCounter >= 1 && leftTowerBlueprint) {
             haveLeftTower = true;
-        } else {
-            moneyAlert();
         }
     }
 
     private void buildRightTurret() {
         if (goldCounter >= 1 && rightTurretBlueprint) {
             haveRightTurret = true;
-        } else {
-            moneyAlert();
         }
     }
 
     private void buildLeftTurret() {
         if (goldCounter >= 1 && leftTurretBlueprint) {
             haveLeftTurret = true;
-        } else {
-            moneyAlert();
         }
     }
 
     private void buildMainTower() {
         if (goldCounter >= 1 && mainTowerBlueprint) {
             haveMainTower = true;
-        } else {
-            moneyAlert();
         }
     }
 
@@ -656,9 +634,6 @@ public class ClickerMainMenu extends Screen_ {
 
     }
 
-    private void moneyAlert() {
-        isAlert = true;
-    }
 
     private void turnOffAlert() {
         isAlert = false;
