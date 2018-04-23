@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.ld41.core.Button_;
 import com.ld41.core.Screen_;
 import com.ld41.main.Game;
+import com.ld41.menu.Died;
 import com.ld41.menu.Treasure;
 
 public class Dungeon extends Screen_{
@@ -132,6 +133,9 @@ public class Dungeon extends Screen_{
         batch.setProjectionMatrix(camera.combined);
         camera.update();
 
+        mPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        camera.unproject(mPos);
+
         batch.begin();
 
         for (int i = 0; i < 75; i++) {
@@ -172,7 +176,7 @@ public class Dungeon extends Screen_{
 
         for (Spider spider : generator.spiders) {
 
-            spider.render(batch);
+            spider.render(batch, mPos);
 
             for (Rectangle r : generator.collisions) {
 
@@ -188,6 +192,19 @@ public class Dungeon extends Screen_{
             }
 
             spider.x += spider.dir;
+
+            if (spider.deleteMe) {
+
+                generator.spiders.remove(spider);
+                break;
+
+            }
+
+            if (spider.died) {
+
+                getGame().setScreen(new Died(getGame()));
+
+            }
 
         }
 
@@ -301,9 +318,6 @@ public class Dungeon extends Screen_{
         }
 
         batch.end();
-
-        mPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-        camera.unproject(mPos);
 
         GUIbatch.begin();
         GUIbatch.draw(almostlighting, 0, 0);
