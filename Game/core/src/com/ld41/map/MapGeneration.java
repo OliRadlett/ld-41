@@ -179,7 +179,7 @@ public class MapGeneration {
 
                 if ((monsterX * 32 != character.getX() && monsterY * 32 != character.getY())) {
 
-                    spiders.add(new Spider(monsterX * 32, monsterY * 32));
+                    spiders.add(new Spider(monsterX * 32, monsterY * 32, character));
                     numMonsters++;
 
                 }
