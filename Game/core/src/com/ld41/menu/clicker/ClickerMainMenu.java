@@ -69,12 +69,20 @@ public class ClickerMainMenu extends Screen_ {
     private Button_ dynamiteButton;
     private boolean isAlert;
     private Texture alert;
-    boolean leftTowerBlueprint;
-    boolean rightTowerBlueprint;
-    boolean leftTurretBlueprint;
-    boolean rightTurretBlueprint;
-    boolean mainTowerBlueprint;
-
+    private boolean leftTowerBlueprint;
+    private boolean rightTowerBlueprint;
+    private boolean leftTurretBlueprint;
+    private boolean rightTurretBlueprint;
+    private boolean mainTowerBlueprint;
+    private Button_ pickaxeTransparentButton;
+    private Button_  minerTransparentButton;
+    private Button_ ponyTransparentButton;
+    private Button_ dynamiteTransparentButton;
+    private Button_ rightTowerButtonTransparent;
+    private Button_ leftTowerButtonTransparent;
+    private Button_ rightTurretButtonTransparent;
+    private Button_ leftTurretButtonTransparent;
+    private Button_ mainTowerButtonTransparent;
 
     public ClickerMainMenu(Game game) {
         super(game);
@@ -191,16 +199,15 @@ public class ClickerMainMenu extends Screen_ {
 
         // add button that adds 1 gold to total
         clickerButton = new Button_((width / 2 - 48), Gdx.graphics.getHeight() - 80, "clickGold");
-        clickerButton.onClick(() -> increaseGold());
+        clickerButton.onClick(this::increaseGold);
 
         // add button that goes to dungeon... todo: or will do when I make it do that
         dungeonButton = new Button_(width - 110, 10, "toDungeon");
-        dungeonButton.onClick(() ->  sendToDungeon());
+        dungeonButton.onClick(this::sendToDungeon);
 
         // add button that sends the user back to main menu
         mainMenuButton = new Button_(10, 10, "toMainMenu");
-        mainMenuButton.onClick(() -> sendToMainMenu());
-
+        mainMenuButton.onClick(this::sendToMainMenu);
 
         /*
             Gold upgrades menu
@@ -208,19 +215,33 @@ public class ClickerMainMenu extends Screen_ {
 
         // add upgrade pickaxe button
         pickaxeButton = new Button_(10, Gdx.graphics.getHeight() - 100, "upgradePickaxe");
-        pickaxeButton.onClick(() -> upgradePickaxe());
+        pickaxeButton.onClick(this::upgradePickaxe);
+
+        pickaxeTransparentButton = new Button_(10, Gdx.graphics.getHeight() - 100,
+                "upgradePickaxeTransparent");
+        pickaxeTransparentButton.onClick(this::upgradePickaxe);
 
         // add miner button
         minerButton = new Button_(10, Gdx.graphics.getHeight() - 180, "addMiner");
-        minerButton.onClick(() -> addMiner());
+        minerButton.onClick(this::addMiner);
+
+        minerTransparentButton = new Button_(10, Gdx.graphics.getHeight() - 180, "addMinerTransparent");
+        minerTransparentButton.onClick(this::addMiner);
 
         // add pit pony button
         ponyButton = new Button_(10, Gdx.graphics.getHeight() - 260, "trainPony");
-        ponyButton.onClick(() -> trainPony());
+        ponyButton.onClick(this::trainPony);
+
+        ponyTransparentButton = new Button_(10, Gdx.graphics.getHeight() - 260, "trainPonyTransparent");
+        ponyTransparentButton.onClick(this::trainPony);
 
         //add buy dynamite button
         dynamiteButton = new Button_(10, Gdx.graphics.getHeight() - 340, "buyDynamite");
-        dynamiteButton.onClick(() -> buyDynamite());
+        dynamiteButton.onClick(this::buyDynamite);
+
+        dynamiteTransparentButton = new Button_(10, Gdx.graphics.getHeight() - 340,
+                "buyDynamiteTransparent");
+        dynamiteTransparentButton.onClick(this::buyDynamite);
 
         /*
 
@@ -236,23 +257,38 @@ public class ClickerMainMenu extends Screen_ {
 
         // add right tower upgrade button
         rightTowerButton = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 100, "buildRightTower");
-        rightTowerButton.onClick(() -> buildRightTower());
+        rightTowerButton.onClick(this::buildRightTower);
+
+        rightTowerButtonTransparent = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 100, "buildRightTowerTransparent");
+        rightTowerButtonTransparent.onClick(this::buildRightTower);
 
         // add left tower upgrade button
         leftTowerButton = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 180, "buildLeftTower");
-        leftTowerButton.onClick(() -> buildLeftTower());
+        leftTowerButton.onClick(this::buildLeftTower);
+
+        leftTowerButtonTransparent = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 180, "buildLeftTowerTransparent");
+        leftTowerButtonTransparent.onClick(this::buildLeftTurret);
 
         // add right turret
         rightTurretButton = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 260, "buildRightTurret");
-        rightTurretButton.onClick(() -> buildRightTurret());
+        rightTurretButton.onClick(this::buildRightTurret);
+
+        rightTurretButtonTransparent = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 260, "buildRightTurretTransparent");
+        rightTurretButtonTransparent.onClick(this::buildRightTurret);
 
         // add left turret
         leftTurretButton = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 340, "buildLeftTurret");
-        leftTurretButton.onClick(() -> buildLeftTurret());
+        leftTurretButton.onClick(this::buildLeftTurret);
+
+        leftTurretButtonTransparent = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 340, "buildLeftTurretTransparent");
+        leftTurretButtonTransparent.onClick(this::buildLeftTurret);
 
         // add main tower
         mainTowerButton = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 420, "buildMainTower");
-        mainTowerButton.onClick(() -> buildMainTower());
+        mainTowerButton.onClick(this::buildMainTower);
+
+        mainTowerButtonTransparent = new Button_(Gdx.graphics.getWidth() - 105, Gdx.graphics.getHeight() - 420, "buildMainTowerTransparent");
+        mainTowerButtonTransparent.onClick(this::buildMainTower);
     }
 
     @Override
@@ -268,39 +304,93 @@ public class ClickerMainMenu extends Screen_ {
         // draw castle texture and buttons
         int x = (Gdx.graphics.getWidth() / 2) - (castle.getWidth() / 2);
         batch.draw(castle, x, 0);
+
         clickerButton.render(batch);
         dungeonButton.render(batch);
-        minerButton.render(batch);
         mainMenuButton.render(batch);
-        pickaxeButton.render(batch);
-        ponyButton.render(batch);
-        dynamiteButton.render(batch);
 
-        String rightTowerPrice = "Price: 1000";
-        String leftTowerPrice = "Price: 2000";
-        String rightTurretPrice = "Price: 3000";
-        String leftTurretPrice = "Price: 4000";
-        String mainTowerPrice = "Price: 5000";
+        if (goldCounter >= minerPrice) {
+            minerButton.render(batch);
+        } else {
+            minerTransparentButton.render(batch);
+        }
 
-        if (!haveRightTower && rightTowerBlueprint) {
-            rightTowerButton.render(batch);
-            font.draw(batch, rightTowerPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 60);
+        if (goldCounter >= pickaxePrice) {
+            pickaxeButton.render(batch);
+        } else {
+            pickaxeTransparentButton.render(batch);
         }
-        if (!haveLeftTower && leftTowerBlueprint) {
-            leftTowerButton.render(batch);
-            font.draw(batch, leftTowerPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 140);
+
+        if (goldCounter >= ponyPrice) {
+            ponyButton.render(batch);
+        } else {
+            ponyTransparentButton.render(batch);
         }
-        if (!haveRightTurret && rightTurretBlueprint) {
-            rightTurretButton.render(batch);
-            font.draw(batch, rightTurretPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 220);
+
+        if (goldCounter >= dynamitePrice) {
+            dynamiteButton.render(batch);
+        } else {
+            dynamiteTransparentButton.render(batch);
         }
-        if (!haveLeftTurret && leftTurretBlueprint) {
-            leftTurretButton.render(batch);
-            font.draw(batch, leftTurretPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 300);
+
+        String rightTowerPrice = "Price: 1000\n        +\n  Blueprint";
+        String leftTowerPrice = "Price: 2000\n        +\n  Blueprint";
+        String rightTurretPrice = "Price: 3000\n        +\n  Blueprint";
+        String leftTurretPrice = "Price: 4000\n        +\n  Blueprint";
+        String mainTowerPrice = "Price: 5000\n        +\n  Blueprint";
+
+
+        // render transparent buttons if user does not have money and blueprints. Render nothing if user
+        // already has the upgrade. Render normal buttons if they can buy it
+
+        if (!haveRightTower) {
+            if (rightTowerBlueprint && goldCounter > 1) {
+                rightTowerButton.render(batch);
+                font.draw(batch, rightTowerPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 45);
+            } else {
+                rightTowerButtonTransparent.render(batch);
+                font.draw(batch, rightTowerPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 45);
+            }
         }
-        if (!haveMainTower && mainTowerBlueprint) {
-            mainTowerButton.render(batch);
-            font.draw(batch, mainTowerPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 380);
+
+        if (!haveLeftTower) {
+            if (leftTowerBlueprint && goldCounter > 1) {
+               leftTowerButton.render(batch);
+               font.draw(batch, leftTowerPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 125);
+           } else {
+               leftTowerButtonTransparent.render(batch);
+               font.draw(batch, leftTowerPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 125);
+           }
+        }
+
+        if (!haveRightTurret) {
+            if (rightTurretBlueprint && goldCounter > 1) {
+                rightTurretButton.render(batch);
+                font.draw(batch, rightTurretPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 205);
+            } else {
+                rightTurretButtonTransparent.render(batch);
+                font.draw(batch, rightTurretPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 205);
+            }
+        }
+
+        if (!haveLeftTurret) {
+            if (leftTurretBlueprint && goldCounter > 1) {
+                leftTurretButton.render(batch);
+                font.draw(batch, leftTurretPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 285);
+            } else {
+                leftTurretButtonTransparent.render(batch);
+                font.draw(batch, leftTurretPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 285);
+            }
+        }
+
+        if (!haveMainTower) {
+            if (mainTowerBlueprint && goldCounter > 1) {
+                mainTowerButton.render(batch);
+                font.draw(batch, mainTowerPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 365);
+            } else {
+                mainTowerButtonTransparent.render(batch);
+                font.draw(batch, mainTowerPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 365);
+            }
         }
 
         // update gold counter and gps counter
@@ -501,7 +591,7 @@ public class ClickerMainMenu extends Screen_ {
 
     private void buildRightTower() {
 
-        if (goldCounter >= 1) {
+        if (goldCounter >= 1 && rightTowerBlueprint) {
             haveRightTower = true;
 
         } else {
@@ -510,7 +600,7 @@ public class ClickerMainMenu extends Screen_ {
     }
 
     private void buildLeftTower() {
-        if (goldCounter >= 1) {
+        if (goldCounter >= 1 && leftTowerBlueprint) {
             haveLeftTower = true;
         } else {
             moneyAlert();
@@ -518,7 +608,7 @@ public class ClickerMainMenu extends Screen_ {
     }
 
     private void buildRightTurret() {
-        if (goldCounter >= 1) {
+        if (goldCounter >= 1 && rightTurretBlueprint) {
             haveRightTurret = true;
         } else {
             moneyAlert();
@@ -526,7 +616,7 @@ public class ClickerMainMenu extends Screen_ {
     }
 
     private void buildLeftTurret() {
-        if (goldCounter >= 1) {
+        if (goldCounter >= 1 && leftTurretBlueprint) {
             haveLeftTurret = true;
         } else {
             moneyAlert();
@@ -534,7 +624,7 @@ public class ClickerMainMenu extends Screen_ {
     }
 
     private void buildMainTower() {
-        if (goldCounter >= 1) {
+        if (goldCounter >= 1 && mainTowerBlueprint) {
             haveMainTower = true;
         } else {
             moneyAlert();
