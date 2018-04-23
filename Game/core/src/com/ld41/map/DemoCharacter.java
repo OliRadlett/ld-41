@@ -1,5 +1,6 @@
 package com.ld41.map;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -13,13 +14,15 @@ public class DemoCharacter {
     int right;
     int up;
     int down;
-    Texture textureLeft;
-    Texture textureRight;
-    Texture textureUp;
-    Texture textureDown;
+    int frame;
     Texture texture;
+    Texture upTex[];
+    Texture downTex[];
+    Texture leftTex[];
+    Texture rightTex[];
     Rectangle r;
     MapGeneration gen;
+    float delta;
 
     public DemoCharacter(int x, int y, MapGeneration gen) {
 
@@ -33,29 +36,57 @@ public class DemoCharacter {
         dir = right;
         r = new Rectangle(this.x, this.y, 32, 32);
 
-        textureLeft = new Texture("map/demoCharacter1.png");
-        textureRight = new Texture("map/demoCharacter2.png");
-        textureUp = new Texture("map/demoCharacter3.png");
-        textureDown = new Texture("map/demoCharacter4.png");
-        texture = textureRight;
+        upTex = new Texture[2];
+        downTex = new Texture[2];
+        leftTex = new Texture[2];
+        rightTex = new Texture[2];
+        upTex[0] = new Texture("map/demoCharacter3_1.png");
+        upTex[1] = new Texture("map/demoCharacter3_2.png");
+        downTex[0] = new Texture("map/demoCharacter4_1.png");
+        downTex[1] = new Texture("map/demoCharacter4_2.png");
+        leftTex[0] = new Texture("map/demoCharacter1_1.png");
+        leftTex[1] = new Texture("map/demoCharacter1_2.png");
+        rightTex[0] = new Texture("map/demoCharacter2_1.png");
+        rightTex[1] = new Texture("map/demoCharacter2_2.png");
+        frame = 0;
+        delta = 0;
+        texture = rightTex[frame];
 
     }
 
     public void render(SpriteBatch batch) {
 
+        delta += Gdx.graphics.getDeltaTime();
+
+        if (delta >= 0.4f) {
+
+            if (frame == 0) {
+
+                frame = 1;
+
+            } else {
+
+                frame = 0;
+
+            }
+
+            delta = 0;
+
+        }
+
         switch (dir) {
 
             case 0:
-                texture = textureLeft;
+                texture = leftTex[frame];
                 break;
             case 1:
-                texture = textureRight;
+                texture = rightTex[frame];
                 break;
             case 2:
-                texture = textureUp;
+                texture = upTex[frame];
                 break;
             case 3:
-                texture = textureDown;
+                texture = downTex[frame];
                 break;
 
         }
