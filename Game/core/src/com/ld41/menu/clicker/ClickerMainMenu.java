@@ -7,16 +7,12 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Timer;
 import com.ld41.core.Button_;
 import com.ld41.core.Screen_;
 import com.ld41.main.Game;
 import com.ld41.map.Dungeon;
 import com.ld41.menu.Menu;
-
-import javax.xml.soap.Text;
 import java.io.*;
 import java.util.Properties;
 
@@ -73,6 +69,12 @@ public class ClickerMainMenu extends Screen_ {
     private Button_ dynamiteButton;
     private boolean isAlert;
     private Texture alert;
+    boolean leftTowerBlueprint;
+    boolean rightTowerBlueprint;
+    boolean leftTurretBlueprint;
+    boolean rightTurretBlueprint;
+    boolean mainTowerBlueprint;
+
 
     public ClickerMainMenu(Game game) {
         super(game);
@@ -130,6 +132,13 @@ public class ClickerMainMenu extends Screen_ {
                 haveRightTurret = Boolean.parseBoolean(properties.getProperty("haveRightTurret"));
                 haveLeftTurret = Boolean.parseBoolean(properties.getProperty("haveLeftTurret"));
                 haveMainTower = Boolean.parseBoolean(properties.getProperty("haveMainTower"));
+
+                // restoring blueprint states
+                rightTowerBlueprint = Boolean.parseBoolean(properties.getProperty("rightTowerBlueprint"));
+                leftTowerBlueprint = Boolean.parseBoolean(properties.getProperty("leftTowerBlueprint"));
+                leftTurretBlueprint = Boolean.parseBoolean(properties.getProperty("leftTurretBlueprint"));
+                rightTurretBlueprint = Boolean.parseBoolean(properties.getProperty("rightTurretBlueprint"));
+                mainTowerBlueprint = Boolean.parseBoolean(properties.getProperty("mainTowerBlueprint"));
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -273,23 +282,23 @@ public class ClickerMainMenu extends Screen_ {
         String leftTurretPrice = "Price: 4000";
         String mainTowerPrice = "Price: 5000";
 
-        if (!haveRightTower) {
+        if (!haveRightTower && rightTowerBlueprint) {
             rightTowerButton.render(batch);
             font.draw(batch, rightTowerPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 60);
         }
-        if (!haveLeftTower) {
+        if (!haveLeftTower && leftTowerBlueprint) {
             leftTowerButton.render(batch);
             font.draw(batch, leftTowerPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 140);
         }
-        if (!haveRightTurret) {
+        if (!haveRightTurret && rightTurretBlueprint) {
             rightTurretButton.render(batch);
             font.draw(batch, rightTurretPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 220);
         }
-        if (!haveLeftTurret) {
+        if (!haveLeftTurret && leftTurretBlueprint) {
             leftTurretButton.render(batch);
             font.draw(batch, leftTurretPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 300);
         }
-        if (!haveMainTower) {
+        if (!haveMainTower && mainTowerBlueprint) {
             mainTowerButton.render(batch);
             font.draw(batch, mainTowerPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 380);
         }

@@ -10,11 +10,10 @@ import com.ld41.core.Screen_;
 import com.ld41.main.Game;
 import com.ld41.menu.clicker.ClickerMainMenu;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.Properties;
+import java.util.Random;
 
 public class Treasure extends Screen_ {
 
@@ -28,6 +27,32 @@ public class Treasure extends Screen_ {
     boolean ownsLeftTurret;
     boolean ownsRightTurret;
     boolean ownsMainTower;
+    boolean leftTowerBlueprint;
+    boolean rightTowerBlueprint;
+    boolean leftTurretBlueprint;
+    boolean rightTurretBlueprint;
+    boolean mainTowerBlueprint;
+    int goldCounter;
+    String goldString;
+    int gps;
+    String gpsString;
+    int pickaxePrice;
+    int pickaxeCounter;
+    String pickaxeStringPrice;
+    String pickaxeString;
+    int minerCounter;
+    int minerPrice;
+    String minerStringPrice;
+    String minerString;
+    int ponyCounter;
+    int ponyPrice;
+    String ponyStringPrice;
+    String ponyString;
+    int dynamiteCounter;
+    int dynamitePrice;
+    String dynamiteStringPrice;
+    String dynamiteString;
+    
 
     public Treasure(Game game) {
         super(game);
@@ -47,42 +72,123 @@ public class Treasure extends Screen_ {
 
         bg = new Texture("castle/background.png");
 
-        if (new File("save.properties").isFile()) {
+        ArrayList<String> blueprintArray = new ArrayList<>();
 
-            try {
+        try {
 
-                File file = new File("save.properties");
-                FileInputStream fileInput = new FileInputStream(file);
-                Properties properties = new Properties();
-                properties.load(fileInput);
-                fileInput.close();
+            File file = new File("save.properties");
+            FileInputStream fileInput = new FileInputStream(file);
+            Properties properties = new Properties();
+            properties.load(fileInput);
+            fileInput.close();
 
-                ownsRightTower = Boolean.parseBoolean(properties.getProperty("haveRightTower"));
-                ownsLeftTower = Boolean.parseBoolean(properties.getProperty("haveLeftTower"));
-                ownsRightTurret = Boolean.parseBoolean(properties.getProperty("haveRightTurret"));
-                ownsLeftTurret = Boolean.parseBoolean(properties.getProperty("haveLeftTurret"));
-                ownsMainTower = Boolean.parseBoolean(properties.getProperty("haveMainTower"));
+            // restoring gold
+            goldCounter = Integer.parseInt(properties.getProperty("gold"));
+            gps = Integer.parseInt(properties.getProperty("gps"));
+            goldString = "Gold: " + goldCounter;
+            gpsString = "Gold per Second: " + gps;
 
-            } catch (FileNotFoundException e) {
+            // restoring pickaxe upgrades
+            pickaxePrice = Integer.parseInt(properties.getProperty("pickaxePrice"));
+            pickaxeCounter = Integer.parseInt(properties.getProperty("pickaxeCounter"));
+            pickaxeStringPrice = "Price: " + pickaxePrice;
+            pickaxeString = "Pickaxes Upgrades: " + pickaxeCounter;
 
-                e.printStackTrace();
+            // restoring miners
+            minerCounter = Integer.parseInt(properties.getProperty("minerCounter"));
+            minerPrice = Integer.parseInt(properties.getProperty("minerPrice"));
+            minerStringPrice = "Price: " + minerPrice;
+            minerString = "Miners: " + minerCounter;
 
-                ownsLeftTower = false;
-                ownsRightTower = false;
-                ownsLeftTurret = false;
-                ownsRightTurret = false;
-                ownsMainTower = false;
+            // restoring ponies
+            ponyCounter = Integer.parseInt(properties.getProperty("ponyCounter"));
+            ponyPrice = Integer.parseInt(properties.getProperty("ponyPrice"));
+            ponyStringPrice = "Price: " + ponyPrice;
+            ponyString = "Miners: " + ponyCounter;
 
-            } catch (IOException e) {
+            // restoring dynamite
+            dynamiteCounter = Integer.parseInt(properties.getProperty("dynamiteCounter"));
+            dynamitePrice = Integer.parseInt(properties.getProperty("dynamitePrice"));
+            dynamiteStringPrice = "Price: " + dynamitePrice;
+            dynamiteString = "Dynamite: " + dynamiteCounter;
 
-                e.printStackTrace();
+            ownsRightTower = Boolean.parseBoolean(properties.getProperty("haveRightTower"));
+            ownsLeftTower = Boolean.parseBoolean(properties.getProperty("haveLeftTower"));
+            ownsRightTurret = Boolean.parseBoolean(properties.getProperty("haveRightTurret"));
+            ownsLeftTurret = Boolean.parseBoolean(properties.getProperty("haveLeftTurret"));
+            ownsMainTower = Boolean.parseBoolean(properties.getProperty("haveMainTower"));
 
+
+            if (!ownsRightTower) {
+                blueprintArray.add("rightTowerBlueprint");
             }
+            if (!ownsLeftTower) {
+                blueprintArray.add("leftTowerBlueprint");
+            }
+            if (!ownsRightTurret) {
+                blueprintArray.add("rightTurretBlueprint");
+            }
+            if (!ownsLeftTurret) {
+                blueprintArray.add("leftTurretBlueprint");
+            }
+            if (!ownsMainTower) {
+                blueprintArray.add("mainTowerBlueprint");
+            }
+
+            System.out.println(blueprintArray);
+
+            Random randomGenerator = new Random();
+
+            if (blueprintArray != null) {
+                int size = blueprintArray.size();
+                System.out.println(String.valueOf(size));
+                int num = randomGenerator.nextInt(size);
+                System.out.println(String.valueOf(num));
+
+                String givenBlueprint = blueprintArray.get(num);
+
+                if (givenBlueprint.equals("rightTowerBlueprint")) {
+                    rightTowerBlueprint = true;
+                }
+                if (givenBlueprint.equals("leftTowerBlueprint")) {
+                    leftTowerBlueprint = true;
+                }
+                if (givenBlueprint.equals("leftTurretBlueprint")) {
+                    leftTurretBlueprint = true;
+                }
+                if (givenBlueprint.equals("rightTurretBlueprint")) {
+                    rightTurretBlueprint = true;
+                }
+                if (givenBlueprint.equals("mainTowerBlueprint")) {
+                    mainTowerBlueprint = true;
+                }
+
+                System.out.println(rightTowerBlueprint);
+                System.out.println(leftTowerBlueprint);
+                System.out.println(rightTurretBlueprint);
+                System.out.println(leftTurretBlueprint);
+                System.out.println(mainTowerBlueprint);
+            }
+
+
+        } catch (FileNotFoundException e) {
+
+            e.printStackTrace();
+
+            ownsLeftTower = false;
+            ownsRightTower = false;
+            ownsLeftTurret = false;
+            ownsRightTurret = false;
+            ownsMainTower = false;
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
 
         }
 
-        //TODO choose random unowned blueprint and write it to file
 
+        //TODO choose random unowned blueprint and write it to file
     }
 
     @Override
@@ -134,6 +240,46 @@ public class Treasure extends Screen_ {
     }
 
     public void switchScreenToMainMenu() {
+
+        try {
+            Properties properties = new Properties();
+
+            properties.setProperty("gold", String.valueOf(goldCounter));
+            properties.setProperty("gps", String.valueOf(gps));
+
+            properties.setProperty("pickaxePrice", String.valueOf(pickaxePrice));
+            properties.setProperty("pickaxeCounter", String.valueOf(pickaxeCounter));
+
+            properties.setProperty("minerPrice", String.valueOf(minerPrice));
+            properties.setProperty("minerCounter", String.valueOf(minerCounter));
+
+            properties.setProperty("ponyPrice", String.valueOf(ponyPrice));
+            properties.setProperty("ponyCounter", String.valueOf(ponyCounter));
+
+            properties.setProperty("dynamitePrice", String.valueOf(dynamitePrice));
+            properties.setProperty("dynamiteCounter", String.valueOf(dynamiteCounter));
+
+            properties.setProperty("haveRightTower", String.valueOf(ownsRightTower));
+            properties.setProperty("haveLeftTower", String.valueOf(ownsLeftTower));
+            properties.setProperty("haveRightTurret", String.valueOf(ownsRightTurret));
+            properties.setProperty("haveLeftTurret", String.valueOf(ownsLeftTurret));
+            properties.setProperty("haveMainTower", String.valueOf(ownsMainTower));
+
+            properties.setProperty("leftTowerBlueprint", String.valueOf(leftTowerBlueprint));
+            properties.setProperty("rightTowerBlueprint", String.valueOf(rightTowerBlueprint));
+            properties.setProperty("leftTurretBlueprint", String.valueOf(leftTurretBlueprint));
+            properties.setProperty("rightTurretBlueprint", String.valueOf(rightTurretBlueprint));
+            properties.setProperty("mainTowerBlueprint", String.valueOf(mainTowerBlueprint));
+
+            File file = new File("save.properties");
+            System.out.println(file.getAbsolutePath());
+            FileOutputStream fileOut = new FileOutputStream(file);
+            properties.store(fileOut,"Ludum Dare 41 Save" );
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         getGame().setScreen(new ClickerMainMenu(getGame()));
         this.dispose();
     }
