@@ -340,7 +340,7 @@ public class ClickerMainMenu extends Screen_ {
         // already has the upgrade. Render normal buttons if they can buy it
 
         if (!haveRightTower) {
-            if (rightTowerBlueprint && goldCounter > 1) {
+            if (rightTowerBlueprint && goldCounter > 1000) {
                 rightTowerButton.render(batch);
                 font.draw(batch, rightTowerPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 45);
             } else {
@@ -350,7 +350,7 @@ public class ClickerMainMenu extends Screen_ {
         }
 
         if (!haveLeftTower) {
-            if (leftTowerBlueprint && goldCounter > 1) {
+            if (leftTowerBlueprint && goldCounter > 2000) {
                leftTowerButton.render(batch);
                font.draw(batch, leftTowerPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 125);
            } else {
@@ -360,7 +360,7 @@ public class ClickerMainMenu extends Screen_ {
         }
 
         if (!haveRightTurret) {
-            if (rightTurretBlueprint && goldCounter > 1) {
+            if (rightTurretBlueprint && goldCounter > 3000) {
                 rightTurretButton.render(batch);
                 font.draw(batch, rightTurretPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 205);
             } else {
@@ -370,7 +370,7 @@ public class ClickerMainMenu extends Screen_ {
         }
 
         if (!haveLeftTurret) {
-            if (leftTurretBlueprint && goldCounter > 1) {
+            if (leftTurretBlueprint && goldCounter > 4000) {
                 leftTurretButton.render(batch);
                 font.draw(batch, leftTurretPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 285);
             } else {
@@ -380,7 +380,7 @@ public class ClickerMainMenu extends Screen_ {
         }
 
         if (!haveMainTower) {
-            if (mainTowerBlueprint && goldCounter > 1) {
+            if (mainTowerBlueprint && goldCounter > 5000) {
                 mainTowerButton.render(batch);
                 font.draw(batch, mainTowerPrice, Gdx.graphics.getWidth() - 185, Gdx.graphics.getHeight() - 365);
             } else {
@@ -518,7 +518,7 @@ public class ClickerMainMenu extends Screen_ {
             if (pickaxeCounter > 0) {
                 pickaxePrice += pickaxePrice * 0.6;
                 pickaxeStringPrice = "Price " + pickaxePrice;
-                gps += pickaxeCounter;
+                gps += 1;
                 gpsString = "Gold per Second: " + gps;
             }
         }
@@ -534,9 +534,9 @@ public class ClickerMainMenu extends Screen_ {
 
             // increases price of a miner by a third each time a new one is bought
             if (minerCounter > 0) {
-                minerPrice += minerPrice * 0.5;
+                minerPrice += minerPrice * 0.6;
                 minerStringPrice = "Price: " + minerPrice;
-                gps += minerCounter * 2;
+                gps +=  2;
                 gpsString = "Gold per Second: " + gps;
             }
 
@@ -552,9 +552,9 @@ public class ClickerMainMenu extends Screen_ {
             goldString = "Gold: " + String.valueOf(goldCounter);
 
             if (ponyCounter > 0) {
-                ponyPrice += ponyPrice * 0.5;
+                ponyPrice += ponyPrice * 0.6;
                 ponyStringPrice = "Price: " + ponyPrice;
-                gps += ponyCounter * 5;
+                gps += 5;
                 gpsString = "Gold per second: " + gps;
             }
         }
@@ -571,7 +571,7 @@ public class ClickerMainMenu extends Screen_ {
             if (dynamiteCounter > 0) {
                 dynamitePrice += dynamitePrice * 0.6;
                 dynamiteStringPrice = "Price: " + dynamitePrice;
-                gps += dynamiteCounter * 10;
+                gps += 10;
                 gpsString = "Gold per second: " + gps;
             }
         }
@@ -579,32 +579,32 @@ public class ClickerMainMenu extends Screen_ {
 
     private void buildRightTower() {
 
-        if (goldCounter >= 1 && rightTowerBlueprint) {
+        if (goldCounter >= 1000 && rightTowerBlueprint) {
             haveRightTower = true;
 
         }
     }
 
     private void buildLeftTower() {
-        if (goldCounter >= 1 && leftTowerBlueprint) {
+        if (goldCounter >= 2000 && leftTowerBlueprint) {
             haveLeftTower = true;
         }
     }
 
     private void buildRightTurret() {
-        if (goldCounter >= 1 && rightTurretBlueprint) {
+        if (goldCounter >= 3000 && rightTurretBlueprint) {
             haveRightTurret = true;
         }
     }
 
     private void buildLeftTurret() {
-        if (goldCounter >= 1 && leftTurretBlueprint) {
+        if (goldCounter >= 4000 && leftTurretBlueprint) {
             haveLeftTurret = true;
         }
     }
 
     private void buildMainTower() {
-        if (goldCounter >= 1 && mainTowerBlueprint) {
+        if (goldCounter >= 5000 && mainTowerBlueprint) {
             haveMainTower = true;
         }
     }
