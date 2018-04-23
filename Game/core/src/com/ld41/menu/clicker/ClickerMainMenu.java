@@ -13,6 +13,8 @@ import com.ld41.core.Screen_;
 import com.ld41.main.Game;
 import com.ld41.map.Dungeon;
 import com.ld41.menu.Menu;
+import com.ld41.menu.Treasure;
+
 import java.io.*;
 import java.util.Properties;
 

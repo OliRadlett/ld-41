@@ -3,6 +3,7 @@ package com.ld41.menu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.ld41.core.Button_;
@@ -20,7 +21,7 @@ public class Treasure extends Screen_ {
     SpriteBatch batch;
     OrthographicCamera camera;
     Vector3 mPos;
-    Button_ toClickerMenuButton;
+    Button_ continueButton;
     Texture bg;
     boolean ownsLeftTower;
     boolean ownsRightTower;
@@ -52,7 +53,8 @@ public class Treasure extends Screen_ {
     int dynamitePrice;
     String dynamiteStringPrice;
     String dynamiteString;
-    
+    BitmapFont font;
+    String givenBlueprint;
 
     public Treasure(Game game) {
         super(game);
@@ -61,14 +63,17 @@ public class Treasure extends Screen_ {
     @Override
     public void show() {
 
+        font = new BitmapFont();
+        font.getData().setScale(2);
+
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.x = Gdx.graphics.getWidth() / 2;
         camera.position.y = Gdx.graphics.getHeight() / 2;
         batch = new SpriteBatch();
 
         // button to switch to main menu
-        toClickerMenuButton = new Button_((Gdx.graphics.getWidth() / 2 - 135), 275, "toClickerMainMenu");
-        toClickerMenuButton.onClick(() -> switchScreenToMainMenu());
+        continueButton = new Button_((Gdx.graphics.getWidth() / 2 - 150 ), Gdx.graphics.getHeight() - 600, "continueGame");
+        continueButton.onClick(this::switchScreenToMainMenu);
 
         bg = new Texture("castle/background.png");
 
@@ -145,7 +150,7 @@ public class Treasure extends Screen_ {
                 int num = randomGenerator.nextInt(size);
                 System.out.println(String.valueOf(num));
 
-                String givenBlueprint = blueprintArray.get(num);
+                givenBlueprint = blueprintArray.get(num);
 
                 if (givenBlueprint.equals("rightTowerBlueprint")) {
                     rightTowerBlueprint = true;
@@ -162,12 +167,6 @@ public class Treasure extends Screen_ {
                 if (givenBlueprint.equals("mainTowerBlueprint")) {
                     mainTowerBlueprint = true;
                 }
-
-                System.out.println(rightTowerBlueprint);
-                System.out.println(leftTowerBlueprint);
-                System.out.println(rightTurretBlueprint);
-                System.out.println(leftTurretBlueprint);
-                System.out.println(mainTowerBlueprint);
             }
 
 
@@ -187,8 +186,6 @@ public class Treasure extends Screen_ {
 
         }
 
-
-        //TODO choose random unowned blueprint and write it to file
     }
 
     @Override
@@ -197,20 +194,40 @@ public class Treasure extends Screen_ {
         batch.setProjectionMatrix(camera.combined);
         camera.update();
 
+
         batch.begin();
 
         batch.draw(bg, 0, 0);
+        continueButton.render(batch);
 
-        toClickerMenuButton.render(batch);
+        if (givenBlueprint.equals("rightTowerBlueprint")) {
+            font.draw(batch, "Congratulations, you found the Right Tower Blueprint!",
+                    Gdx.graphics.getWidth() - 1000, Gdx.graphics.getHeight() / 2 + 200);
+        }
+        if (givenBlueprint.equals("leftTowerBlueprint")) {
+            font.draw(batch, "Congratulations, you found the Left Tower Blueprint!",
+                    Gdx.graphics.getWidth() - 1000, Gdx.graphics.getHeight() / 2 + 200);
+        }
+        if (givenBlueprint.equals("leftTurretBlueprint")) {
+            font.draw(batch, "Congratulations, you found the Left Turret Blueprint!",
+                    Gdx.graphics.getWidth() - 1000, Gdx.graphics.getHeight() / 2 + 200);
+        }
+        if (givenBlueprint.equals("rightTurretBlueprint")) {
+            font.draw(batch, "Congratulations, you found the Right Turret Blueprint!",
+                    Gdx.graphics.getWidth() - 1000, Gdx.graphics.getHeight() / 2 + 200);
+        }
+        if (givenBlueprint.equals("mainTowerBlueprint")) {
+            font.draw(batch, "Congratulations, you found the Main Tower Blueprint!",
+                    Gdx.graphics.getWidth() - 1000, Gdx.graphics.getHeight() / 2 + 200);
+        }
 
-        //TODO render blueprint in some way
-        //TODO make blueprint do something?, idk whats real anymore
+
 
         batch.end();
 
         mPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(mPos);
-        toClickerMenuButton.logic(mPos);
+        continueButton.logic(mPos);
 
     }
 
