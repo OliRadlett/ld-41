@@ -21,7 +21,7 @@ public class Died extends Screen_ {
     OrthographicCamera camera;
     Vector3 mPos;
     // Copy-pasted button and names, but is back button
-    Button_ toClickerMenuButton;
+    Button_ continueButton;
     Texture bg;
 
     public Died(Game game) {
@@ -37,8 +37,8 @@ public class Died extends Screen_ {
         batch = new SpriteBatch();
 
         // button to switch to main menu
-        toClickerMenuButton = new Button_((Gdx.graphics.getWidth() / 2 - 135), 275, "toMainMenu");
-        toClickerMenuButton.onClick(() -> switchScreenToMainMenu());
+        continueButton = new Button_((Gdx.graphics.getWidth() / 2 - 150 ), Gdx.graphics.getHeight() - 400, "continueGame");
+        continueButton.onClick(this::switchScreenToMainMenu);
 
         bg = new Texture("castle/died.png");
 
@@ -54,13 +54,13 @@ public class Died extends Screen_ {
 
         batch.draw(bg, 0, 0);
 
-        toClickerMenuButton.render(batch);
+        continueButton.render(batch);
 
         batch.end();
 
         mPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(mPos);
-        toClickerMenuButton.logic(mPos);
+        continueButton.logic(mPos);
 
     }
 
