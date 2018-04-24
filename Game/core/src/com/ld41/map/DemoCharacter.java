@@ -1,6 +1,7 @@
 package com.ld41.map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -60,17 +61,21 @@ public class DemoCharacter {
 
         if (delta >= 0.4f) {
 
-            if (frame == 0) {
+            if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.D)) {
 
-                frame = 1;
+                if (frame == 0) {
 
-            } else {
+                    frame = 1;
 
-                frame = 0;
+                } else {
+
+                    frame = 0;
+
+                }
+
+                delta = 0;
 
             }
-
-            delta = 0;
 
         }
 
