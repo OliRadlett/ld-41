@@ -77,7 +77,7 @@ public class Treasure extends Screen_ {
 
         bg = new Texture("castle/background.png");
 
-        ArrayList<String> blueprintArray = new ArrayList<>();
+        ArrayList<String> blueprintArray = new ArrayList<String>();
 
         try {
 

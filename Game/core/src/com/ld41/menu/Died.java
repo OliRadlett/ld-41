@@ -10,11 +10,6 @@ import com.ld41.core.Screen_;
 import com.ld41.main.Game;
 import com.ld41.menu.clicker.ClickerMainMenu;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Properties;
-import java.util.Random;
-
 public class Died extends Screen_ {
 
     SpriteBatch batch;
