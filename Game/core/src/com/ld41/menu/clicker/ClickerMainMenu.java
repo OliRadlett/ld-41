@@ -22,6 +22,7 @@ import java.util.Properties;
 
 public class ClickerMainMenu extends Screen_ {
 
+    // Dave:
     private Texture castle, bg;
     private OrthographicCamera camera;
     private SpriteBatch batch;
@@ -86,8 +87,17 @@ public class ClickerMainMenu extends Screen_ {
     private Button_ leftTurretButtonTransparent;
     private Button_ mainTowerButtonTransparent;
 
+    // Oli:
     String fileStr;
     Properties properties;
+    static final int miner = 0;
+    static final int pony = 1;
+    static final int dynamite = 2;
+    static final int pickaxe = 3;
+    int[] prices;
+    int[] upgrades;
+    int[] upgradeEffects;
+    String[] strings;
 
     public ClickerMainMenu(Game game) {
         super(game);
@@ -99,11 +109,23 @@ public class ClickerMainMenu extends Screen_ {
 
         font = new BitmapFont();
         fileStr = "save.properties";
+        prices = new int[4];
+        upgrades = new int[4];
+        upgradeEffects = new int[4];
+        strings = new String[4];
+
+        upgradeEffects[miner] = 2;
+        upgradeEffects[pony] = 5;
+        upgradeEffects[dynamite] = 10;
+        upgradeEffects[pickaxe] = 1;
 
         // checks to see if there's a save file
         if (FileUtils.FileExists(fileStr)) {
 
             properties = FileUtils.loadProperties(fileStr);
+
+            // TODO Wooooooosh, this could all be done in a for loop dave
+            // Thanks for making work for me dave
 
             // restoring gold
             goldCounter = Integer.parseInt(properties.getProperty("gold"));
@@ -113,27 +135,39 @@ public class ClickerMainMenu extends Screen_ {
 
             // restoring pickaxe upgrades
             pickaxePrice = Integer.parseInt(properties.getProperty("pickaxePrice"));
+            prices[pickaxe] = pickaxe;
             pickaxeCounter = Integer.parseInt(properties.getProperty("pickaxeCounter"));
+            upgrades[pickaxe] = pickaxeCounter;
             pickaxeStringPrice = "Price: " + pickaxePrice;
             pickaxeString = "Pickaxes Upgrades: " + pickaxeCounter;
+            strings[pickaxe] = pickaxeString;
 
             // restoring miners
             minerCounter = Integer.parseInt(properties.getProperty("minerCounter"));
+            upgrades[miner] = minerCounter;
             minerPrice = Integer.parseInt(properties.getProperty("minerPrice"));
+            prices[miner] = minerPrice;
             minerStringPrice = "Price: " + minerPrice;
             minerString = "Miners: " + minerCounter;
+            strings[miner] = minerString;
 
             // restoring ponies
             ponyCounter = Integer.parseInt(properties.getProperty("ponyCounter"));
+            upgrades[pony] = ponyCounter;
             ponyPrice = Integer.parseInt(properties.getProperty("ponyPrice"));
+            prices[pony] = ponyPrice;
             ponyStringPrice = "Price: " + ponyPrice;
             ponyString = "Miners: " + ponyCounter;
+            strings[pony] = ponyString;
 
             // restoring dynamite
             dynamiteCounter = Integer.parseInt(properties.getProperty("dynamiteCounter"));
+            upgrades[dynamite] = dynamiteCounter;
             dynamitePrice = Integer.parseInt(properties.getProperty("dynamitePrice"));
+            prices[dynamite] = dynamitePrice;
             dynamiteStringPrice = "Price: " + dynamitePrice;
             dynamiteString = "Dynamite: " + dynamiteCounter;
+            strings[dynamite] = ponyString;
 
             // restoring towers
             haveRightTower = Boolean.parseBoolean(properties.getProperty("haveRightTower"));
@@ -196,7 +230,7 @@ public class ClickerMainMenu extends Screen_ {
         clickerButton = new Button_((width / 2 - 48), Gdx.graphics.getHeight() - 80, "clickGold");
         clickerButton.onClick(this::increaseGold);
 
-        // add button that goes to dungeon... todo: or will do when I make it do that
+        // add button that goes to dungeon...
         dungeonButton = new Button_(width - 110, 10, "toDungeon");
         dungeonButton.onClick(this::sendToDungeon);
 
@@ -210,33 +244,33 @@ public class ClickerMainMenu extends Screen_ {
 
         // add upgrade pickaxe button
         pickaxeButton = new Button_(10, Gdx.graphics.getHeight() - 100, "upgradePickaxe");
-        pickaxeButton.onClick(this::upgradePickaxe);
+        pickaxeButton.onClick(() -> BuyUpgrade(pickaxe));
 
         pickaxeTransparentButton = new Button_(10, Gdx.graphics.getHeight() - 100,
                 "upgradePickaxeTransparent");
-        pickaxeTransparentButton.onClick(this::upgradePickaxe);
+        pickaxeTransparentButton.onClick(() -> BuyUpgrade(pickaxe));
 
         // add miner button
         minerButton = new Button_(10, Gdx.graphics.getHeight() - 180, "addMiner");
-        minerButton.onClick(this::addMiner);
+        minerButton.onClick(() -> BuyUpgrade(miner));
 
         minerTransparentButton = new Button_(10, Gdx.graphics.getHeight() - 180, "addMinerTransparent");
-        minerTransparentButton.onClick(this::addMiner);
+        minerTransparentButton.onClick(() -> BuyUpgrade(miner));
 
         // add pit pony button
         ponyButton = new Button_(10, Gdx.graphics.getHeight() - 260, "trainPony");
-        ponyButton.onClick(this::trainPony);
+        ponyButton.onClick(() -> BuyUpgrade(pony));
 
         ponyTransparentButton = new Button_(10, Gdx.graphics.getHeight() - 260, "trainPonyTransparent");
-        ponyTransparentButton.onClick(this::trainPony);
+        ponyTransparentButton.onClick(() -> BuyUpgrade(pony));
 
         //add buy dynamite button
         dynamiteButton = new Button_(10, Gdx.graphics.getHeight() - 340, "buyDynamite");
-        dynamiteButton.onClick(this::buyDynamite);
+        dynamiteButton.onClick(() -> BuyUpgrade(dynamite));
 
         dynamiteTransparentButton = new Button_(10, Gdx.graphics.getHeight() - 340,
                 "buyDynamiteTransparent");
-        dynamiteTransparentButton.onClick(this::buyDynamite);
+        dynamiteTransparentButton.onClick(() -> BuyUpgrade(dynamite));
 
         /*
 
@@ -507,73 +541,45 @@ public class ClickerMainMenu extends Screen_ {
         System.out.println(String.valueOf(goldCounter));
     }
 
-    private void upgradePickaxe() {
-        if (goldCounter >= pickaxePrice) {
-            pickaxeCounter ++;
-            pickaxeString = "Pickaxe Upgrades: " + String.valueOf(pickaxeCounter);
-            goldCounter -= pickaxePrice;
-            goldString = "Gold: " + String.valueOf(goldCounter);
+    // Oli's function
+    private void BuyUpgrade(int upgrade) {
 
-            if (pickaxeCounter > 0) {
-                pickaxePrice += pickaxePrice * 0.6;
-                pickaxeStringPrice = "Price " + pickaxePrice;
-                gps += 1;
-                gpsString = "Gold per Second: " + gps;
-            }
-        }
-    }
+        if (goldCounter >= prices[upgrade]) {
 
-    private void addMiner() {
+            goldCounter -= prices[upgrade];
+            upgrades[upgrade] ++;
 
-        if (goldCounter >= minerPrice) {
-            minerCounter ++;
-            minerString = "Miners: " + String.valueOf(minerCounter);
-            goldCounter = goldCounter - minerPrice;
-            goldString = "Gold: " + String.valueOf(goldCounter);
+            switch (upgrade) {
 
-            // increases price of a miner by a third each time a new one is bought
-            if (minerCounter > 0) {
-                minerPrice += minerPrice * 0.6;
-                minerStringPrice = "Price: " + minerPrice;
-                gps +=  2;
-                gpsString = "Gold per Second: " + gps;
+                case miner:
+
+                    strings[upgrade] = "Miners: " + upgrades[upgrade];
+                    break;
+
+                case pony:
+
+                    strings[upgrade] = "Ponies: " + upgrades[upgrade];
+                    break;
+
+                case dynamite:
+
+                    strings[upgrade] = "Dynamite: " + upgrades[upgrade];
+                    break;
+
             }
 
+            goldString = "Gold: " + goldCounter;
+
         }
-    }
 
-    private void trainPony() {
+        if (upgrades[upgrade] > 0) {
 
-        if (goldCounter >= ponyPrice) {
-            ponyCounter ++;
-            ponyString = "Ponies: " + String.valueOf(ponyCounter);
-            goldCounter -= ponyPrice;
-            goldString = "Gold: " + String.valueOf(goldCounter);
+            prices[upgrade] += prices[upgrade] * 0.6;
+            gps += upgradeEffects[upgrade];
+            gpsString = "Gold per second: " + gps;
 
-            if (ponyCounter > 0) {
-                ponyPrice += ponyPrice * 0.6;
-                ponyStringPrice = "Price: " + ponyPrice;
-                gps += 5;
-                gpsString = "Gold per second: " + gps;
-            }
         }
-    }
 
-    private void buyDynamite() {
-
-        if (goldCounter >= dynamitePrice) {
-            dynamiteCounter ++;
-            dynamiteString = "Dynamite: " + String.valueOf(dynamiteCounter);
-            goldCounter -= dynamitePrice;
-            goldString = "Gold :" + String.valueOf(goldCounter);
-
-            if (dynamiteCounter > 0) {
-                dynamitePrice += dynamitePrice * 0.6;
-                dynamiteStringPrice = "Price: " + dynamitePrice;
-                gps += 10;
-                gpsString = "Gold per second: " + gps;
-            }
-        }
     }
 
     private void buildRightTower() {
