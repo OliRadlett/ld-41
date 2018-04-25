@@ -8,13 +8,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Timer;
 import com.ld41.core.Button_;
+import com.ld41.core.FileUtils;
 import com.ld41.core.Screen_;
 import com.ld41.main.Game;
 import com.ld41.map.Dungeon;
 import com.ld41.menu.Menu;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -86,6 +86,9 @@ public class ClickerMainMenu extends Screen_ {
     private Button_ leftTurretButtonTransparent;
     private Button_ mainTowerButtonTransparent;
 
+    String fileStr;
+    Properties properties;
+
     public ClickerMainMenu(Game game) {
         super(game);
     }
@@ -95,64 +98,57 @@ public class ClickerMainMenu extends Screen_ {
     public void show() {
 
         font = new BitmapFont();
+        fileStr = "save.properties";
 
         // checks to see if there's a save file
-        if (new File("save.properties").isFile()) {
+        if (FileUtils.FileExists(fileStr)) {
 
-            try {
-                File file = new File("save.properties");
-                FileInputStream fileInput = new FileInputStream(file);
-                Properties properties = new Properties();
-                properties.load(fileInput);
-                fileInput.close();
+            properties = FileUtils.loadProperties(fileStr);
 
-                // restoring gold
-                goldCounter = Integer.parseInt(properties.getProperty("gold"));
-                gps = Integer.parseInt(properties.getProperty("gps"));
-                goldString = "Gold: " + goldCounter;
-                gpsString = "Gold per Second: " + gps;
+            // restoring gold
+            goldCounter = Integer.parseInt(properties.getProperty("gold"));
+            gps = Integer.parseInt(properties.getProperty("gps"));
+            goldString = "Gold: " + goldCounter;
+            gpsString = "Gold per Second: " + gps;
 
-                // restoring pickaxe upgrades
-                pickaxePrice = Integer.parseInt(properties.getProperty("pickaxePrice"));
-                pickaxeCounter = Integer.parseInt(properties.getProperty("pickaxeCounter"));
-                pickaxeStringPrice = "Price: " + pickaxePrice;
-                pickaxeString = "Pickaxes Upgrades: " + pickaxeCounter;
+            // restoring pickaxe upgrades
+            pickaxePrice = Integer.parseInt(properties.getProperty("pickaxePrice"));
+            pickaxeCounter = Integer.parseInt(properties.getProperty("pickaxeCounter"));
+            pickaxeStringPrice = "Price: " + pickaxePrice;
+            pickaxeString = "Pickaxes Upgrades: " + pickaxeCounter;
 
-                // restoring miners
-                minerCounter = Integer.parseInt(properties.getProperty("minerCounter"));
-                minerPrice = Integer.parseInt(properties.getProperty("minerPrice"));
-                minerStringPrice = "Price: " + minerPrice;
-                minerString = "Miners: " + minerCounter;
+            // restoring miners
+            minerCounter = Integer.parseInt(properties.getProperty("minerCounter"));
+            minerPrice = Integer.parseInt(properties.getProperty("minerPrice"));
+            minerStringPrice = "Price: " + minerPrice;
+            minerString = "Miners: " + minerCounter;
 
-                // restoring ponies
-                ponyCounter = Integer.parseInt(properties.getProperty("ponyCounter"));
-                ponyPrice = Integer.parseInt(properties.getProperty("ponyPrice"));
-                ponyStringPrice = "Price: " + ponyPrice;
-                ponyString = "Miners: " + ponyCounter;
+            // restoring ponies
+            ponyCounter = Integer.parseInt(properties.getProperty("ponyCounter"));
+            ponyPrice = Integer.parseInt(properties.getProperty("ponyPrice"));
+            ponyStringPrice = "Price: " + ponyPrice;
+            ponyString = "Miners: " + ponyCounter;
 
-                // restoring dynamite
-                dynamiteCounter = Integer.parseInt(properties.getProperty("dynamiteCounter"));
-                dynamitePrice = Integer.parseInt(properties.getProperty("dynamitePrice"));
-                dynamiteStringPrice = "Price: " + dynamitePrice;
-                dynamiteString = "Dynamite: " + dynamiteCounter;
+            // restoring dynamite
+            dynamiteCounter = Integer.parseInt(properties.getProperty("dynamiteCounter"));
+            dynamitePrice = Integer.parseInt(properties.getProperty("dynamitePrice"));
+            dynamiteStringPrice = "Price: " + dynamitePrice;
+            dynamiteString = "Dynamite: " + dynamiteCounter;
 
-                // restoring towers
-                haveRightTower = Boolean.parseBoolean(properties.getProperty("haveRightTower"));
-                haveLeftTower = Boolean.parseBoolean(properties.getProperty("haveLeftTower"));
-                haveRightTurret = Boolean.parseBoolean(properties.getProperty("haveRightTurret"));
-                haveLeftTurret = Boolean.parseBoolean(properties.getProperty("haveLeftTurret"));
-                haveMainTower = Boolean.parseBoolean(properties.getProperty("haveMainTower"));
+            // restoring towers
+            haveRightTower = Boolean.parseBoolean(properties.getProperty("haveRightTower"));
+            haveLeftTower = Boolean.parseBoolean(properties.getProperty("haveLeftTower"));
+            haveRightTurret = Boolean.parseBoolean(properties.getProperty("haveRightTurret"));
+            haveLeftTurret = Boolean.parseBoolean(properties.getProperty("haveLeftTurret"));
+            haveMainTower = Boolean.parseBoolean(properties.getProperty("haveMainTower"));
 
-                // restoring blueprint states
-                rightTowerBlueprint = Boolean.parseBoolean(properties.getProperty("rightTowerBlueprint"));
-                leftTowerBlueprint = Boolean.parseBoolean(properties.getProperty("leftTowerBlueprint"));
-                leftTurretBlueprint = Boolean.parseBoolean(properties.getProperty("leftTurretBlueprint"));
-                rightTurretBlueprint = Boolean.parseBoolean(properties.getProperty("rightTurretBlueprint"));
-                mainTowerBlueprint = Boolean.parseBoolean(properties.getProperty("mainTowerBlueprint"));
+            // restoring blueprint states
+            rightTowerBlueprint = Boolean.parseBoolean(properties.getProperty("rightTowerBlueprint"));
+            leftTowerBlueprint = Boolean.parseBoolean(properties.getProperty("leftTowerBlueprint"));
+            leftTurretBlueprint = Boolean.parseBoolean(properties.getProperty("leftTurretBlueprint"));
+            rightTurretBlueprint = Boolean.parseBoolean(properties.getProperty("rightTurretBlueprint"));
+            mainTowerBlueprint = Boolean.parseBoolean(properties.getProperty("mainTowerBlueprint"));
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         } else {
             goldCounter = 0;
             gps = 0;
