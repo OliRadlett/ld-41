@@ -133,41 +133,48 @@ public class ClickerMainMenu extends Screen_ {
             goldString = "Gold: " + goldCounter;
             gpsString = "Gold per Second: " + gps;
 
-            // restoring pickaxe upgrades
-            pickaxePrice = Integer.parseInt(properties.getProperty("pickaxePrice"));
-            prices[pickaxe] = pickaxe;
-            pickaxeCounter = Integer.parseInt(properties.getProperty("pickaxeCounter"));
-            upgrades[pickaxe] = pickaxeCounter;
+            for (int upgrade = 0; upgrade < upgrades.length; upgrade++) {
+
+                String name = null;
+
+                switch (upgrade) {
+
+                    case pickaxe:
+
+                        name = "pickaxe";
+                        break;
+
+                    case miner:
+
+                        name = "miner";
+                        break;
+
+                    case pony:
+
+                        name = "pony";
+                        break;
+
+                    case dynamite:
+
+                        name = "pony";
+                        break;
+
+                }
+
+                prices[upgrade] = Integer.parseInt(properties.getProperty(name + "Price"));
+                System.out.println(prices[upgrade]);
+                upgrades[upgrade] = Integer.parseInt(properties.getProperty(name + "Counter"));
+                name = name.substring(0, 1).toUpperCase() + name.substring(1);
+                strings[upgrade] = name + " Upgrades: " + upgrades[upgrade];
+
+            }
+
+            // TODO Ask dave what these variables are for
+
             pickaxeStringPrice = "Price: " + pickaxePrice;
-            pickaxeString = "Pickaxes Upgrades: " + pickaxeCounter;
-            strings[pickaxe] = pickaxeString;
-
-            // restoring miners
-            minerCounter = Integer.parseInt(properties.getProperty("minerCounter"));
-            upgrades[miner] = minerCounter;
-            minerPrice = Integer.parseInt(properties.getProperty("minerPrice"));
-            prices[miner] = minerPrice;
             minerStringPrice = "Price: " + minerPrice;
-            minerString = "Miners: " + minerCounter;
-            strings[miner] = minerString;
-
-            // restoring ponies
-            ponyCounter = Integer.parseInt(properties.getProperty("ponyCounter"));
-            upgrades[pony] = ponyCounter;
-            ponyPrice = Integer.parseInt(properties.getProperty("ponyPrice"));
-            prices[pony] = ponyPrice;
             ponyStringPrice = "Price: " + ponyPrice;
-            ponyString = "Miners: " + ponyCounter;
-            strings[pony] = ponyString;
-
-            // restoring dynamite
-            dynamiteCounter = Integer.parseInt(properties.getProperty("dynamiteCounter"));
-            upgrades[dynamite] = dynamiteCounter;
-            dynamitePrice = Integer.parseInt(properties.getProperty("dynamitePrice"));
-            prices[dynamite] = dynamitePrice;
             dynamiteStringPrice = "Price: " + dynamitePrice;
-            dynamiteString = "Dynamite: " + dynamiteCounter;
-            strings[dynamite] = ponyString;
 
             // restoring towers
             haveRightTower = Boolean.parseBoolean(properties.getProperty("haveRightTower"));
@@ -184,10 +191,13 @@ public class ClickerMainMenu extends Screen_ {
             mainTowerBlueprint = Boolean.parseBoolean(properties.getProperty("mainTowerBlueprint"));
 
         } else {
+
             goldCounter = 0;
             gps = 0;
             gpsString = "Gold per Second: 0";
             goldString = "Gold: 0";
+
+            // TODO Need to add items to arrays if file doesn't exist
 
             pickaxePrice = 25;
             pickaxeString = "Pickaxe Upgrades: 0";
@@ -426,21 +436,23 @@ public class ClickerMainMenu extends Screen_ {
         font.draw(batch, goldString, 10, Gdx.graphics.getHeight() - 10);
         font.draw(batch, gpsString, 115, Gdx.graphics.getHeight() - 10);
 
+        // TODO Draw text using for loop
+
         // add and update pickaxe counter and price
         font.draw(batch, pickaxeStringPrice, 115, Gdx.graphics.getHeight() - 45);
-        font.draw(batch, pickaxeString, 115, Gdx.graphics.getHeight() - 75);
+        font.draw(batch, strings[pickaxe], 115, Gdx.graphics.getHeight() - 75);
 
         // add and update miner counter and price
         font.draw(batch, minerStringPrice, 115, Gdx.graphics.getHeight() - 125);
-        font.draw(batch, minerString, 115, Gdx.graphics.getHeight() - 155);
+        font.draw(batch, strings[miner], 115, Gdx.graphics.getHeight() - 155);
 
         // add and update pony counter and price
         font.draw(batch, ponyStringPrice, 115, Gdx.graphics.getHeight() - 205);
-        font.draw(batch, ponyString, 115, Gdx.graphics.getHeight() - 235);
+        font.draw(batch, strings[pony], 115, Gdx.graphics.getHeight() - 235);
 
         // add and update dynamite counter and price
         font.draw(batch, dynamiteStringPrice, 115, Gdx.graphics.getHeight() - 285);
-        font.draw(batch, dynamiteString, 115, Gdx.graphics.getHeight() - 315);
+        font.draw(batch, strings[dynamite], 115, Gdx.graphics.getHeight() - 315);
 
         if (haveRightTower) {
             batch.draw(rightTowerBody, x, 0);
