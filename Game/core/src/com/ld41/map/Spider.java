@@ -18,7 +18,7 @@ public class Spider {
     Texture downTex[];
     Texture leftTex[];
     Texture rightTex[];
-    DemoCharacter player;
+    Player player;
     Rectangle r;
     float delta;
     float delta2;
@@ -28,7 +28,7 @@ public class Spider {
     boolean deleteMe;
     boolean died;
 
-    public Spider(int x, int y, DemoCharacter player) {
+    public Spider(int x, int y, Player player) {
 
         this.x = x;
         this.y = y;

@@ -15,13 +15,17 @@ public class MapGeneration {
     List<vCorridor> vCorridors;
     public List<Rectangle> collisions;
     public List<Spider> spiders;
-    public int empty = 0;
-    public int wall = 1;
-    public int chest = 2;
+    public static final int empty = 0;
+    public static final int wall = 1;
+    public static final int chest = 2;
+    public static final int wall_bottom = 3;
+    public static final int wall_top = 4;
+    public static final int wall_left = 5;
+    public static final int wall_right = 6;
     int numRooms;
     int roomWidth;
     int roomHeight;
-    public DemoCharacter character;
+    public Player character;
     public Rectangle chestRect;
 
 
@@ -65,7 +69,7 @@ public class MapGeneration {
 
             if (rooms.indexOf(room) == 0) {
 
-                character = new DemoCharacter(room.centreX * 32, room.centreY * 32, this);
+                character = new Player(room.centreX * 32, room.centreY * 32, this);
 
             }
 
@@ -151,6 +155,7 @@ public class MapGeneration {
 
         }
 
+
         // Add collisions
         for (int i = 0; i < width; i++) {
 
@@ -159,6 +164,32 @@ public class MapGeneration {
                 if (map[i][j] == wall) {
 
                     collisions.add(new Rectangle(i * 32, j * 32, 32, 32));
+
+                }
+
+            }
+
+        }
+
+        // Spoopy edge detection
+        // TODO I'm pretty sure that this if statement lowers my life expectancy
+        for (int i = 1; i < width - 1; i++) {
+
+            for (int j = 1; j < height - 1; j++) {
+
+                if (map[i][j] == wall) {
+
+                    if (map[i][j - 1] == empty && ((map[i][j + 1] == wall || (map[i][j + 1] == wall_bottom) && (map[i - 1][j] == wall || (map[i - 1][j] == wall_bottom) && (map[i + 1][j] == wall || (map[i + 1][j] == wall_bottom)))))) {
+
+                        map[i][j] = wall_bottom;
+
+                    }
+
+                    if (map[i][j + 1] == empty && ((map[i][j - 1] == wall || (map[i][j - 1] == wall_top) && (map[i - 1][j] == wall || (map[i - 1][j] == wall_top) && (map[i + 1][j] == wall || (map[i + 1][j] == wall_top)))))) {
+
+                        map[i][j] = wall_top;
+
+                    }
 
                 }
 

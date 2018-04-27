@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -22,7 +23,8 @@ public class Dungeon extends Screen_{
     Vector3 mPos;
     MapGeneration generator;
     int[][] map;
-    Texture wall, floor1, floor2, chest, debug, debug2, almostlighting;
+    Texture wall, wall_bottom, wall_top, floor1, floor2, chest, debug, debug2, almostlighting;
+    Pixmap crosshair;
 
     boolean wPressed, aPressed, dPressed, sPressed;
 
@@ -41,6 +43,8 @@ public class Dungeon extends Screen_{
         generateButton = new Button_(64, 64, "generate");
         generateButton.onClick(this::generate);
         wall = new Texture("map/wall.png");
+        wall_bottom = new Texture("map/wall_bottom.png");
+        wall_top = new Texture("map/wall_top.png");
         floor1 = new Texture("map/floor1.png");
         floor2 = new Texture("map/floor2.png");
         chest = new Texture("map/chest.png");
@@ -55,6 +59,8 @@ public class Dungeon extends Screen_{
         //camera.zoom = 4f;
         debug = new Texture("map/debug.png");
         debug2 = new Texture("map/debug2.png");
+        crosshair = new Pixmap(Gdx.files.internal("map/crosshair.png"));
+        Gdx.graphics.setCursor(Gdx.graphics.newCursor(crosshair, 15, 15));
 
         Gdx.input.setInputProcessor(new InputAdapter() {
 
@@ -159,6 +165,14 @@ public class Dungeon extends Screen_{
 
                         batch.draw(floor1, i * floor1.getWidth(), j * floor1.getHeight());
                         batch.draw(chest, i * chest.getWidth(), j * chest.getHeight());
+
+                    case 3:
+                        batch.draw(wall_bottom, i * wall_bottom.getWidth(), j * wall_bottom.getHeight());
+                        break;
+
+                    case 4:
+                        batch.draw(wall_top, i * wall_top.getWidth(), j * wall_top.getHeight());
+                        break;
 
                 }
 
