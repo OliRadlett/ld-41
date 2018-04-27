@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
-public class DemoCharacter {
+public class Player {
 
     int x;
     int y;
@@ -25,7 +25,7 @@ public class DemoCharacter {
     MapGeneration gen;
     float delta;
 
-    public DemoCharacter(int x, int y, MapGeneration gen) {
+    public Player(int x, int y, MapGeneration gen) {
 
         this.x = x;
         this.y = y;
