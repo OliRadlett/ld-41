@@ -6,23 +6,17 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Timer;
 import com.ld41.core.Button_;
-import com.ld41.core.FileUtils;
 import com.ld41.core.Screen_;
 import com.ld41.main.Game;
 import com.ld41.map.Dungeon;
 import com.ld41.menu.Menu;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Properties;
 
 
 public class ClickerMainMenu extends Screen_ {
 
-    // Dave:
     private Texture castle, bg;
     private OrthographicCamera camera;
     private SpriteBatch batch;
@@ -70,8 +64,6 @@ public class ClickerMainMenu extends Screen_ {
     private Button_ mainTowerButton;
     private Texture mainTower;
     private Button_ dynamiteButton;
-    private boolean isAlert;
-    private Texture alert;
     private boolean leftTowerBlueprint;
     private boolean rightTowerBlueprint;
     private boolean leftTurretBlueprint;
@@ -87,17 +79,15 @@ public class ClickerMainMenu extends Screen_ {
     private Button_ leftTurretButtonTransparent;
     private Button_ mainTowerButtonTransparent;
 
-    // Oli:
-    String fileStr;
-    Properties properties;
-    static final int miner = 0;
-    static final int pony = 1;
-    static final int dynamite = 2;
-    static final int pickaxe = 3;
-    int[] prices;
-    int[] upgrades;
-    int[] upgradeEffects;
-    String[] strings;
+    private static final int miner = 0;
+    private static final int pony = 1;
+    private static final int dynamite = 2;
+    private static final int pickaxe = 3;
+    private int[] prices;
+    private int[] upgrades;
+    private int[] upgradeEffects;
+    private String[] strings;
+
 
     public ClickerMainMenu(Game game) {
         super(game);
@@ -108,11 +98,16 @@ public class ClickerMainMenu extends Screen_ {
     public void show() {
 
         font = new BitmapFont();
-        fileStr = "save.properties";
+
         prices = new int[4];
         upgrades = new int[4];
         upgradeEffects = new int[4];
         strings = new String[4];
+
+        prices[pickaxe] = 25;
+        prices[miner] = 50;
+        prices[pony] = 120;
+        prices[dynamite] = 250;
 
         upgradeEffects[miner] = 2;
         upgradeEffects[pony] = 5;
@@ -120,84 +115,67 @@ public class ClickerMainMenu extends Screen_ {
         upgradeEffects[pickaxe] = 1;
 
         // checks to see if there's a save file
-        if (FileUtils.FileExists(fileStr)) {
+        if (new File("save.properties").isFile()) {
 
-            properties = FileUtils.loadProperties(fileStr);
+            try {
+                File file = new File("save.properties");
+                FileInputStream fileInput = new FileInputStream(file);
+                Properties properties = new Properties();
+                properties.load(fileInput);
+                fileInput.close();
 
-            // TODO Wooooooosh, this could all be done in a for loop dave
-            // Thanks for making work for me dave
+                // restoring gold
+                goldCounter = Integer.parseInt(properties.getProperty("gold"));
+                gps = Integer.parseInt(properties.getProperty("gps"));
+                goldString = "Gold: " + goldCounter;
+                gpsString = "Gold per Second: " + gps;
 
-            // restoring gold
-            goldCounter = Integer.parseInt(properties.getProperty("gold"));
-            gps = Integer.parseInt(properties.getProperty("gps"));
-            goldString = "Gold: " + goldCounter;
-            gpsString = "Gold per Second: " + gps;
+                // restoring pickaxe upgrades
+                pickaxePrice = Integer.parseInt(properties.getProperty("pickaxePrice"));
+                pickaxeCounter = Integer.parseInt(properties.getProperty("pickaxeCounter"));
+                pickaxeStringPrice = "Price: " + pickaxePrice;
+                pickaxeString = "Pickaxes Upgrades: " + pickaxeCounter;
 
-            for (int upgrade = 0; upgrade < upgrades.length; upgrade++) {
+                // restoring miners
+                minerCounter = Integer.parseInt(properties.getProperty("minerCounter"));
+                minerPrice = Integer.parseInt(properties.getProperty("minerPrice"));
+                minerStringPrice = "Price: " + minerPrice;
+                minerString = "Miners: " + minerCounter;
 
-                String name = null;
+                // restoring ponies
+                ponyCounter = Integer.parseInt(properties.getProperty("ponyCounter"));
+                ponyPrice = Integer.parseInt(properties.getProperty("ponyPrice"));
+                ponyStringPrice = "Price: " + ponyPrice;
+                ponyString = "Miners: " + ponyCounter;
 
-                switch (upgrade) {
+                // restoring dynamite
+                dynamiteCounter = Integer.parseInt(properties.getProperty("dynamiteCounter"));
+                dynamitePrice = Integer.parseInt(properties.getProperty("dynamitePrice"));
+                dynamiteStringPrice = "Price: " + dynamitePrice;
+                dynamiteString = "Dynamite: " + dynamiteCounter;
 
-                    case pickaxe:
+                // restoring towers
+                haveRightTower = Boolean.parseBoolean(properties.getProperty("haveRightTower"));
+                haveLeftTower = Boolean.parseBoolean(properties.getProperty("haveLeftTower"));
+                haveRightTurret = Boolean.parseBoolean(properties.getProperty("haveRightTurret"));
+                haveLeftTurret = Boolean.parseBoolean(properties.getProperty("haveLeftTurret"));
+                haveMainTower = Boolean.parseBoolean(properties.getProperty("haveMainTower"));
 
-                        name = "pickaxe";
-                        break;
+                // restoring blueprint states
+                rightTowerBlueprint = Boolean.parseBoolean(properties.getProperty("rightTowerBlueprint"));
+                leftTowerBlueprint = Boolean.parseBoolean(properties.getProperty("leftTowerBlueprint"));
+                leftTurretBlueprint = Boolean.parseBoolean(properties.getProperty("leftTurretBlueprint"));
+                rightTurretBlueprint = Boolean.parseBoolean(properties.getProperty("rightTurretBlueprint"));
+                mainTowerBlueprint = Boolean.parseBoolean(properties.getProperty("mainTowerBlueprint"));
 
-                    case miner:
-
-                        name = "miner";
-                        break;
-
-                    case pony:
-
-                        name = "pony";
-                        break;
-
-                    case dynamite:
-
-                        name = "pony";
-                        break;
-
-                }
-
-                prices[upgrade] = Integer.parseInt(properties.getProperty(name + "Price"));
-                System.out.println(prices[upgrade]);
-                upgrades[upgrade] = Integer.parseInt(properties.getProperty(name + "Counter"));
-                name = name.substring(0, 1).toUpperCase() + name.substring(1);
-                strings[upgrade] = name + " Upgrades: " + upgrades[upgrade];
-
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-            // TODO Ask dave what these variables are for
-
-            pickaxeStringPrice = "Price: " + pickaxePrice;
-            minerStringPrice = "Price: " + minerPrice;
-            ponyStringPrice = "Price: " + ponyPrice;
-            dynamiteStringPrice = "Price: " + dynamitePrice;
-
-            // restoring towers
-            haveRightTower = Boolean.parseBoolean(properties.getProperty("haveRightTower"));
-            haveLeftTower = Boolean.parseBoolean(properties.getProperty("haveLeftTower"));
-            haveRightTurret = Boolean.parseBoolean(properties.getProperty("haveRightTurret"));
-            haveLeftTurret = Boolean.parseBoolean(properties.getProperty("haveLeftTurret"));
-            haveMainTower = Boolean.parseBoolean(properties.getProperty("haveMainTower"));
-
-            // restoring blueprint states
-            rightTowerBlueprint = Boolean.parseBoolean(properties.getProperty("rightTowerBlueprint"));
-            leftTowerBlueprint = Boolean.parseBoolean(properties.getProperty("leftTowerBlueprint"));
-            leftTurretBlueprint = Boolean.parseBoolean(properties.getProperty("leftTurretBlueprint"));
-            rightTurretBlueprint = Boolean.parseBoolean(properties.getProperty("rightTurretBlueprint"));
-            mainTowerBlueprint = Boolean.parseBoolean(properties.getProperty("mainTowerBlueprint"));
-
         } else {
-
             goldCounter = 0;
             gps = 0;
             gpsString = "Gold per Second: 0";
             goldString = "Gold: 0";
-
-            // TODO Need to add items to arrays if file doesn't exist
 
             pickaxePrice = 25;
             pickaxeString = "Pickaxe Upgrades: 0";
@@ -240,7 +218,7 @@ public class ClickerMainMenu extends Screen_ {
         clickerButton = new Button_((width / 2 - 48), Gdx.graphics.getHeight() - 80, "clickGold");
         clickerButton.onClick(this::increaseGold);
 
-        // add button that goes to dungeon...
+        // add button that goes to dungeon
         dungeonButton = new Button_(width - 110, 10, "toDungeon");
         dungeonButton.onClick(this::sendToDungeon);
 
@@ -254,33 +232,33 @@ public class ClickerMainMenu extends Screen_ {
 
         // add upgrade pickaxe button
         pickaxeButton = new Button_(10, Gdx.graphics.getHeight() - 100, "upgradePickaxe");
-        pickaxeButton.onClick(() -> BuyUpgrade(pickaxe));
+        pickaxeButton.onClick(() -> buyUpgrade(pickaxe));
 
         pickaxeTransparentButton = new Button_(10, Gdx.graphics.getHeight() - 100,
                 "upgradePickaxeTransparent");
-        pickaxeTransparentButton.onClick(() -> BuyUpgrade(pickaxe));
+        pickaxeTransparentButton.onClick(() -> buyUpgrade(pickaxe));
 
         // add miner button
         minerButton = new Button_(10, Gdx.graphics.getHeight() - 180, "addMiner");
-        minerButton.onClick(() -> BuyUpgrade(miner));
+        minerButton.onClick(() -> buyUpgrade(miner));
 
         minerTransparentButton = new Button_(10, Gdx.graphics.getHeight() - 180, "addMinerTransparent");
-        minerTransparentButton.onClick(() -> BuyUpgrade(miner));
+        minerTransparentButton.onClick(() -> buyUpgrade(miner));
 
         // add pit pony button
         ponyButton = new Button_(10, Gdx.graphics.getHeight() - 260, "trainPony");
-        ponyButton.onClick(() -> BuyUpgrade(pony));
+        ponyButton.onClick(() -> buyUpgrade(pony));
 
         ponyTransparentButton = new Button_(10, Gdx.graphics.getHeight() - 260, "trainPonyTransparent");
-        ponyTransparentButton.onClick(() -> BuyUpgrade(pony));
+        ponyTransparentButton.onClick(() -> buyUpgrade(pony));
 
         //add buy dynamite button
         dynamiteButton = new Button_(10, Gdx.graphics.getHeight() - 340, "buyDynamite");
-        dynamiteButton.onClick(() -> BuyUpgrade(dynamite));
+        dynamiteButton.onClick(() -> buyUpgrade(dynamite));
 
         dynamiteTransparentButton = new Button_(10, Gdx.graphics.getHeight() - 340,
                 "buyDynamiteTransparent");
-        dynamiteTransparentButton.onClick(() -> BuyUpgrade(dynamite));
+        dynamiteTransparentButton.onClick(() -> buyUpgrade(dynamite));
 
         /*
 
@@ -348,25 +326,25 @@ public class ClickerMainMenu extends Screen_ {
         dungeonButton.render(batch);
         mainMenuButton.render(batch);
 
-        if (goldCounter >= minerPrice) {
+        if (goldCounter >= prices[miner]) {
             minerButton.render(batch);
         } else {
             minerTransparentButton.render(batch);
         }
 
-        if (goldCounter >= pickaxePrice) {
+        if (goldCounter >= prices[pickaxe]) {
             pickaxeButton.render(batch);
         } else {
             pickaxeTransparentButton.render(batch);
         }
 
-        if (goldCounter >= ponyPrice) {
+        if (goldCounter >= prices[pony]) {
             ponyButton.render(batch);
         } else {
             ponyTransparentButton.render(batch);
         }
 
-        if (goldCounter >= dynamitePrice) {
+        if (goldCounter >= prices[dynamite]) {
             dynamiteButton.render(batch);
         } else {
             dynamiteTransparentButton.render(batch);
@@ -436,23 +414,21 @@ public class ClickerMainMenu extends Screen_ {
         font.draw(batch, goldString, 10, Gdx.graphics.getHeight() - 10);
         font.draw(batch, gpsString, 115, Gdx.graphics.getHeight() - 10);
 
-        // TODO Draw text using for loop
-
         // add and update pickaxe counter and price
         font.draw(batch, pickaxeStringPrice, 115, Gdx.graphics.getHeight() - 45);
-        font.draw(batch, strings[pickaxe], 115, Gdx.graphics.getHeight() - 75);
+        font.draw(batch, pickaxeString, 115, Gdx.graphics.getHeight() - 75);
 
         // add and update miner counter and price
         font.draw(batch, minerStringPrice, 115, Gdx.graphics.getHeight() - 125);
-        font.draw(batch, strings[miner], 115, Gdx.graphics.getHeight() - 155);
+        font.draw(batch, minerString, 115, Gdx.graphics.getHeight() - 155);
 
         // add and update pony counter and price
         font.draw(batch, ponyStringPrice, 115, Gdx.graphics.getHeight() - 205);
-        font.draw(batch, strings[pony], 115, Gdx.graphics.getHeight() - 235);
+        font.draw(batch, ponyString, 115, Gdx.graphics.getHeight() - 235);
 
         // add and update dynamite counter and price
         font.draw(batch, dynamiteStringPrice, 115, Gdx.graphics.getHeight() - 285);
-        font.draw(batch, strings[dynamite], 115, Gdx.graphics.getHeight() - 315);
+        font.draw(batch, dynamiteString, 115, Gdx.graphics.getHeight() - 315);
 
         if (haveRightTower) {
             batch.draw(rightTowerBody, x, 0);
@@ -470,16 +446,6 @@ public class ClickerMainMenu extends Screen_ {
             batch.draw(mainTower, x, 0);
         }
 
-        if (isAlert) {
-            batch.draw(alert, (Gdx.graphics.getWidth() / 2) - 48, (Gdx.graphics.getHeight() / 2) + 230);
-
-            Timer.schedule(new Timer.Task() {
-                @Override
-                public void run() {
-                    turnOffAlert();
-                }
-            }, 2, 999999999); // I have no idea why this has to be so large
-        }
 
         batch.end();
 
@@ -550,11 +516,9 @@ public class ClickerMainMenu extends Screen_ {
         goldCounter ++;
 
         goldString = "Gold: " + String.valueOf(goldCounter);
-        System.out.println(String.valueOf(goldCounter));
     }
 
-    // Oli's function
-    private void BuyUpgrade(int upgrade) {
+    private void buyUpgrade(int upgrade) {
 
         if (goldCounter >= prices[upgrade]) {
 
@@ -563,19 +527,23 @@ public class ClickerMainMenu extends Screen_ {
 
             switch (upgrade) {
 
+                case pickaxe:
+                    pickaxeString = "Pickaxe Upgrades: " + upgrades[upgrade];
+                    break;
+
                 case miner:
 
-                    strings[upgrade] = "Miners: " + upgrades[upgrade];
+                    minerString = "Miners: " + upgrades[upgrade];
                     break;
 
                 case pony:
 
-                    strings[upgrade] = "Ponies: " + upgrades[upgrade];
+                    ponyString = "Ponies: " + upgrades[upgrade];
                     break;
 
                 case dynamite:
 
-                    strings[upgrade] = "Dynamite: " + upgrades[upgrade];
+                    dynamiteString = "Dynamite: " + upgrades[upgrade];
                     break;
 
             }
@@ -586,13 +554,39 @@ public class ClickerMainMenu extends Screen_ {
 
         if (upgrades[upgrade] > 0) {
 
-            prices[upgrade] += prices[upgrade] * 0.6;
+            switch (upgrade) {
+                case miner:
+                    minerPrice += minerPrice * 0.6;
+                    minerStringPrice = "Price: " + minerPrice;
+                    prices[miner] = minerPrice;
+                    break;
+
+                case pickaxe:
+                    pickaxePrice += pickaxePrice * 0.6;
+                    pickaxeStringPrice = "Price: " + pickaxePrice;
+                    prices[pickaxe] = pickaxePrice;
+                    break;
+
+                case pony:
+                    ponyPrice += ponyPrice * 0.6;
+                    ponyStringPrice = "Price: " + ponyPrice;
+                    prices[pony] = ponyPrice;
+                    break;
+
+                case dynamite:
+                    dynamitePrice += dynamitePrice * 0.6;
+                    dynamiteStringPrice = "Price: " + dynamitePrice;
+                    prices[dynamite] = dynamitePrice;
+                    break;
+            }
+
             gps += upgradeEffects[upgrade];
-            gpsString = "Gold per second: " + gps;
+            gpsString = "Gold per Second: " + gps;
 
         }
 
     }
+
 
     private void buildRightTower() {
 
@@ -649,11 +643,6 @@ public class ClickerMainMenu extends Screen_ {
         goldCounter = goldCounter + gps;
         goldString = "Gold: " + String.valueOf(goldCounter);
 
-    }
-
-
-    private void turnOffAlert() {
-        isAlert = false;
     }
 
     private void saveToFile() {
