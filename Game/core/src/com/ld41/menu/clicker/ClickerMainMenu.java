@@ -148,7 +148,7 @@ public class ClickerMainMenu extends Screen_ {
                 ponyStringPrice = "Price: " + ponyPrice;
                 ponyString = "Miners: " + ponyCounter;
 
-                // restoring dynamite
+                // restoring dynamited
                 dynamiteCounter = Integer.parseInt(properties.getProperty("dynamiteCounter"));
                 dynamitePrice = Integer.parseInt(properties.getProperty("dynamitePrice"));
                 dynamiteStringPrice = "Price: " + dynamitePrice;

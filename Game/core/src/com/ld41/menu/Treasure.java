@@ -75,7 +75,7 @@ public class Treasure extends Screen_ {
         continueButton = new Button_((Gdx.graphics.getWidth() / 2 - 150 ), Gdx.graphics.getHeight() - 600, "continueGame");
         continueButton.onClick(this::switchScreenToMainMenu);
 
-        bg = new Texture("castle/background.png");
+        bg = new Texture("castle/Background.png");
 
         ArrayList<String> blueprintArray = new ArrayList<String>();
 
