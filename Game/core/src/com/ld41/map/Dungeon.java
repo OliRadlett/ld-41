@@ -15,6 +15,9 @@ import com.ld41.main.Game;
 import com.ld41.menu.Died;
 import com.ld41.menu.Treasure;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Dungeon extends Screen_{
 
     SpriteBatch batch, GUIbatch;
@@ -25,6 +28,9 @@ public class Dungeon extends Screen_{
     int[][] map;
     Texture wall, wall_bottom, wall_top, floor1, floor2, chest, debug, debug2, almostlighting;
     Pixmap crosshair;
+    List<Bullet> bullets;
+    boolean canshoot;
+    float canshootTimer;
 
     boolean wPressed, aPressed, dPressed, sPressed;
 
@@ -61,6 +67,9 @@ public class Dungeon extends Screen_{
         debug2 = new Texture("map/debug2.png");
         crosshair = new Pixmap(Gdx.files.internal("map/crosshair.png"));
         Gdx.graphics.setCursor(Gdx.graphics.newCursor(crosshair, 15, 15));
+        bullets = new ArrayList<>();
+        canshoot = true;
+        canshootTimer = 0;
 
         Gdx.input.setInputProcessor(new InputAdapter() {
 
@@ -133,6 +142,8 @@ public class Dungeon extends Screen_{
     @Override
     public void render(float delta) {
 
+        canshootTimer += delta;
+
         camera.position.x = (generator.character.getX()) - 16;
         camera.position.y = (generator.character.getY()) - 16;
 
@@ -141,6 +152,28 @@ public class Dungeon extends Screen_{
 
         mPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(mPos);
+
+        if (!canshoot) {
+
+            if (canshootTimer > 0.2) {
+
+                canshootTimer = 0;
+                canshoot = true;
+
+            }
+
+        }
+
+        if (Gdx.input.isTouched()) {
+
+            if (canshoot) {
+
+                bullets.add(new Bullet(generator.character.x, generator.character.y, mPos.x, mPos.y));
+                canshoot = false;
+
+            }
+
+        }
 
         batch.begin();
 
@@ -328,6 +361,12 @@ public class Dungeon extends Screen_{
                 generator.character.setX(generator.character.getX() + 2);
 
             }
+
+        }
+
+        for (Bullet b : bullets) {
+
+            b.render(batch);
 
         }
 

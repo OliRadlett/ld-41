@@ -173,6 +173,7 @@ public class MapGeneration {
 
         // Spoopy edge detection
         // TODO I'm pretty sure that this if statement lowers my life expectancy
+        /*
         for (int i = 1; i < width - 1; i++) {
 
             for (int j = 1; j < height - 1; j++) {
@@ -196,6 +197,7 @@ public class MapGeneration {
             }
 
         }
+        */
 
         int numMonsters = 0;
 
