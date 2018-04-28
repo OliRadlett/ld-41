@@ -29,7 +29,7 @@ public class DesktopLauncher {
 		config.title = title;
 		config.fullscreen = fullscreen;
 		config.resizable = resizeable;
-		config.backgroundFPS = 0;
+		config.backgroundFPS = -1;
 		config.foregroundFPS = refreshRate;
 
 		new LwjglApplication(new Game(), config);
