@@ -137,29 +137,6 @@ public class Spider {
 
         }
 
-        if (this.r.contains(mPos.x, mPos.y)) {
-
-            if (Gdx.input.justTouched()) {
-
-                Vector3 playerPos = new Vector3(player.getX(), player.getY(), 0);
-                Vector3 pos = new Vector3(this.x, this.y, 0);
-                int distFromPlayer = (int) pos.dst(playerPos);
-
-                if (distFromPlayer <= 40) {
-
-                    if (canDie) {
-
-                        this.health--;
-                        canDie = false;
-
-                    }
-
-                }
-
-            }
-
-        }
-
         if (health < 1) {
 
             deleteMe = true;

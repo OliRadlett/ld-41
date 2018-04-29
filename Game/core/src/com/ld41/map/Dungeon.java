@@ -66,7 +66,7 @@ public class Dungeon extends Screen_{
         debug = new Texture("map/debug.png");
         debug2 = new Texture("map/debug2.png");
         crosshair = new Pixmap(Gdx.files.internal("map/crosshair.png"));
-        Gdx.graphics.setCursor(Gdx.graphics.newCursor(crosshair, 15, 15));
+        Gdx.graphics.setCursor(Gdx.graphics.newCursor(crosshair, 16, 16));
         bullets = new ArrayList<>();
         canshoot = true;
         canshootTimer = 0;
@@ -168,8 +168,24 @@ public class Dungeon extends Screen_{
 
             if (canshoot) {
 
-                bullets.add(new Bullet(generator.character.x, generator.character.y, mPos.x, mPos.y));
+                bullets.add(new Bullet(generator.character.x + 12, generator.character.y + 12, mPos.x, mPos.y));
                 canshoot = false;
+
+            }
+
+        }
+
+        for (Spider s : generator.spiders) {
+
+            for (Bullet b : bullets) {
+
+                if (b.r.contains(s.r) || b.r.overlaps(s.r)) {
+
+                    s.health--;
+                    bullets.remove(b);
+                    break;
+
+                }
 
             }
 

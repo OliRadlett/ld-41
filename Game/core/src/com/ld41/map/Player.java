@@ -118,22 +118,4 @@ public class Player {
         this.y = y;
     }
 
-    public boolean canMove() {
-
-        Rectangle rightRect = new Rectangle(this.getX() + 2, this.getY(), 32, 32);
-
-        for (Rectangle r : gen.collisions) {
-
-            if (rightRect.contains(r)) {
-
-                return false;
-
-            }
-
-        }
-
-        return true;
-
-    }
-
 }
