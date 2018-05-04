@@ -191,6 +191,17 @@ public class Dungeon extends Screen_{
 
         }
 
+        for (Bullet b : bullets) {
+
+            if (b.toRemove) {
+
+                bullets.remove(b);
+                break;
+
+            }
+
+        }
+
         batch.begin();
 
         for (int i = 0; i < 75; i++) {

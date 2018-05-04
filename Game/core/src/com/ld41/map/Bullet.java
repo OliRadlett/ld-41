@@ -14,6 +14,8 @@ public class Bullet {
     float dY;
     Texture texture;
     Rectangle r;
+    float lifeTime;
+    boolean toRemove;
 
     public Bullet(float x, float y, float mX, float mY) {
 
@@ -32,20 +34,33 @@ public class Bullet {
 
         this.r = new Rectangle((int)this.x, (int)this.y, this.texture.getWidth(), this.texture.getHeight());
 
+        this.lifeTime = 0;
+        this.toRemove = false;
+
     }
 
     public void render(SpriteBatch batch) {
+
+        this.lifeTime += Gdx.graphics.getDeltaTime();
 
         this.x = this.x + (this.dX * this.speed * Gdx.graphics.getDeltaTime());
         this.y = this.y + (this.dY * this.speed * Gdx.graphics.getDeltaTime());
         this.r.x = (int) this.x;
         this.r.y = (int) this.y;
 
-        // TODO Bullet cleanup and stop at walls
+        // TODO Stop bullets at walls
         // TODO Stop initial shot firing two bullets
         // TODO Stop bullet firing from "To Dungeon" button press
 
         batch.draw(texture, x, y);
+
+        // 3 second lifetime
+        if (lifeTime >= 3) {
+
+            System.out.println("FUCKIN DELETE MEH");
+            this.toRemove = true;
+
+        }
 
     }
 
